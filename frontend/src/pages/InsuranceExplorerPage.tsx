@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { InfoBadge, TrustNote, PENDING_DETAILS_NOTE } from '../components/InfoBadge'
+import { useAppState } from '../state/AppState'
 
 interface Company {
   _id: string
@@ -22,10 +24,6 @@ interface Policy {
   official_policy_pdf_url?: string
 }
 
-interface InsuranceDiscoveryPageProps {
-  onSelectPolicy: (policy: { id: string; name: string; companyName: string }) => void
-  onSkip: () => void
-}
 
 const POLICY_TYPES = [
   { value: '', label: 'All Types' },
@@ -36,7 +34,16 @@ const POLICY_TYPES = [
   { value: 'critical_illness', label: 'Critical Illness' }
 ]
 
-export function InsuranceDiscoveryPage({ onSelectPolicy, onSkip }: InsuranceDiscoveryPageProps) {
+export function InsuranceExplorerPage() {
+  const navigate = useNavigate()
+  const { setSelectedPolicy } = useAppState()
+
+  const onSelectPolicy = (policy: { id: string; name: string; companyName: string }) => {
+    setSelectedPolicy(policy)
+    navigate(`/policy/${policy.id}`)
+  }
+  const onSkip = () => navigate('/analyse')
+
   const [companies, setCompanies] = useState<Company[]>([])
   const [policies, setPolicies] = useState<Policy[]>([])
   const [loading, setLoading] = useState(true)

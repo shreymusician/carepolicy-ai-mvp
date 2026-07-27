@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import { InfoBadge, TrustNote, DocumentLink, sourceBadgeLevel, PENDING_DETAILS_NOTE } from '../components/InfoBadge'
+import { useAppState } from '../state/AppState'
 
 interface Policy {
   _id: string
@@ -34,11 +36,6 @@ interface Explanation {
   waiting_period_explained?: string
 }
 
-interface PolicyDetailPageProps {
-  policyId: string
-  onBack: () => void
-  onUploadDocuments: () => void
-}
 
 const TYPE_LABELS: Record<string, string> = {
   individual: 'Individual',
@@ -48,7 +45,11 @@ const TYPE_LABELS: Record<string, string> = {
   critical_illness: 'Critical Illness'
 }
 
-export function PolicyDetailPage({ policyId, onBack, onUploadDocuments }: PolicyDetailPageProps) {
+export function PolicyDetailPage() {
+  const { id: policyId } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+  const { setSelectedPolicy } = useAppState()
+
   const [policy, setPolicy] = useState<Policy | null>(null)
   const [loading, setLoading] = useState(true)
   const [explanation, setExplanation] = useState<Explanation | null>(null)
@@ -82,16 +83,24 @@ export function PolicyDetailPage({ policyId, onBack, onUploadDocuments }: Policy
       .finally(() => setExplaining(false))
   }, [policy])
 
+  const onBack = () => navigate('/explorer')
+  const onUploadDocuments = () => {
+    if (policy) {
+      setSelectedPolicy({ id: policy._id, name: policy.policy_name, companyName: policy.company_name })
+    }
+    navigate('/analyse')
+  }
+
   if (loading) {
-    return <div className="min-h-screen bg-white flex items-center justify-center">
+    return <div className="py-24 text-center">
       <p className="text-text-muted">Loading policy...</p>
     </div>
   }
 
   if (!policy) {
-    return <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-4 px-4">
+    return <div className="py-24 flex flex-col items-center gap-4 px-4">
       <p className="text-text-muted">We couldn't load this policy.</p>
-      <button onClick={onBack} className="text-primary font-semibold hover:underline">← Back to search</button>
+      <button onClick={onBack} className="text-primary font-semibold hover:underline">← Back to Insurance Explorer</button>
     </div>
   }
 
@@ -107,7 +116,7 @@ export function PolicyDetailPage({ policyId, onBack, onUploadDocuments }: Policy
       <div className="border-b border-border">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
           <button onClick={onBack} className="text-primary font-semibold hover:underline text-sm mb-5">
-            ← Back to search
+            ← Back to Insurance Explorer
           </button>
 
           <div className="flex items-start gap-4">
@@ -205,12 +214,25 @@ export function PolicyDetailPage({ policyId, onBack, onUploadDocuments }: Policy
           </section>
         )}
 
+        {/* At a glance */}
+        <section className="mb-10">
+          <h2 className="text-2xl font-bold text-text mb-4">Policy At a Glance</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <GlanceCard icon="🏢" label="Company" value={policy.company_name} />
+            <GlanceCard icon="📋" label="Policy Type" value={TYPE_LABELS[policy.policy_type] || policy.policy_type} />
+            <GlanceCard icon="💰" label="Sum Insured" value={policy.sum_insured_range?.label} />
+            <GlanceCard icon="🛡️" label="Coverage" value={policy.coverage_summary} clamp />
+            <GlanceCard icon="⏳" label="Waiting Period" value={policy.waiting_period} clamp />
+            <GlanceCard icon="👥" label="Eligibility" value={policy.eligibility} clamp />
+          </div>
+        </section>
+
         {/* Official details */}
         {hasOfficialDetails && (
           <section className="mb-10">
             <div className="flex flex-wrap items-center gap-3 mb-4">
-              <h2 className="text-2xl font-bold text-text">Official Policy Information</h2>
-              <InfoBadge level="official" />
+              <h2 className="text-2xl font-bold text-text">Official Information</h2>
+              <InfoBadge level={sourceBadgeLevel(policy.source_type, true)} />
             </div>
 
             <div className="space-y-5">
@@ -258,19 +280,20 @@ export function PolicyDetailPage({ policyId, onBack, onUploadDocuments }: Policy
           </section>
         )}
 
-        {/* Upload prompt — only when information is thin */}
+        {/* More information on the way */}
         {!hasOfficialDetails && (
           <section className="mb-10">
-            <div className="border-2 border-dashed border-primary/40 bg-blue-50/50 rounded-xl p-6 sm:p-8 text-center">
+            <div className="border-2 border-dashed border-primary/40 bg-blue-50/50 rounded-2xl p-6 sm:p-8 text-center">
               <div className="text-3xl mb-3">📄</div>
-              <h2 className="text-xl font-bold text-text mb-2">Help us complete this policy</h2>
+              <h2 className="text-xl font-bold text-text mb-2">More details on the way</h2>
               <p className="text-text-light mb-1">{PENDING_DETAILS_NOTE}</p>
               <p className="text-text-muted text-sm mb-6">
-                Upload the policy document and CarePolicy AI will explain the coverage, waiting periods and exclusions in simple language.
+                You can upload this policy document now and CarePolicy AI will explain the coverage, waiting periods
+                and exclusions in simple language.
               </p>
               <button
                 onClick={onUploadDocuments}
-                className="bg-primary text-white font-semibold py-3 px-8 rounded-lg hover:bg-blue-700 transition"
+                className="bg-primary text-white font-semibold py-3 px-8 rounded-xl hover:bg-blue-700 transition"
               >
                 Upload Policy Document
               </button>
@@ -278,9 +301,9 @@ export function PolicyDetailPage({ policyId, onBack, onUploadDocuments }: Policy
           </section>
         )}
 
-        {/* Official sources */}
-        <section className="border-t border-border pt-6">
-          <p className="text-xs font-semibold text-text-muted uppercase tracking-wide mb-3">Official sources</p>
+        {/* Official documents */}
+        <section className="border-t border-border pt-8">
+          <h2 className="text-2xl font-bold text-text mb-4">Official Documents</h2>
           <div className="flex flex-col gap-2">
             {policy.customer_information_sheet_url && (
               <DocumentLink href={policy.customer_information_sheet_url} kind="cis" />
