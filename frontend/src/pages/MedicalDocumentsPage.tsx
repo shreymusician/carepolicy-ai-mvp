@@ -13,7 +13,7 @@ export function MedicalDocumentsPage() {
     <ComingSoon
       icon="🧾"
       title="Medical Documents"
-      intro="This module will read hospital paperwork and turn it into structured medical information that can be used to prepare an insurance claim."
+      intro="This module will read hospital paperwork and turn it into structured medical information that can be used to prepare prior authorization requests."
     >
       <h2 className="text-lg font-bold mb-4">Documents this module will analyse</h2>
       <ItemGrid items={DOCUMENTS} />

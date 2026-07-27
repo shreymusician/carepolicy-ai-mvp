@@ -328,12 +328,12 @@ export function PolicyDetailPage() {
           <div className="mt-6"><TrustNote /></div>
         </section>
 
-        {/* Start claim process */}
+        {/* Prior Authorization workflow */}
         <section className="border-t border-border pt-8 mt-10">
-          <h2 className="text-2xl font-bold text-text mb-2">Start Claim Process</h2>
+          <h2 className="text-2xl font-bold text-text mb-2">Prepare Prior Authorization</h2>
           <p className="text-text-muted mb-6 leading-relaxed">
             Analyse your own policy document to get a personalised review of your cover, then continue into medical
-            documents and claim preparation.
+            documents to prepare your prior authorization request before treatment.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             <button

@@ -3,6 +3,15 @@ import InsuranceService from '../services/InsuranceService';
 import PromptBuilderService from '../services/PromptBuilderService';
 import LlmService from '../services/LlmService';
 
+const DEFAULT_COMPARISON_TOPICS = [
+  'coverage',
+  'waiting_periods',
+  'maternity',
+  'room_rent_limits',
+  'mental_health',
+  'ayush'
+] as const;
+
 export class InsuranceController {
   async getCompanies(_req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -34,6 +43,55 @@ export class InsuranceController {
     try {
       const policy = await InsuranceService.getPolicyById(req.params.id);
       res.status(200).json({ success: true, policy });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getPolicyKnowledge(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const policy = await InsuranceService.getPolicyById(req.params.id);
+      const knowledge = await InsuranceService.getKnowledgeByPolicyId(req.params.id);
+
+      if (!knowledge || knowledge.extraction_status === 'failed') {
+        res.status(200).json({
+          success: true,
+          available: false,
+          knowledge: null,
+          message:
+            'Structured details for this product are not available yet. The official policy document is linked below.',
+          official_policy_pdf_url: policy.official_policy_pdf_url
+        });
+        return;
+      }
+
+      res.status(200).json({ success: true, available: true, knowledge });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async comparePolicies(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const idsParam = req.query.ids;
+      const topicsParam = req.query.topics;
+
+      const ids = typeof idsParam === 'string' ? idsParam.split(',').map(s => s.trim()).filter(Boolean) : [];
+      if (ids.length < 2) {
+        res.status(400).json({
+          success: false,
+          error: { code: 'INVALID_COMPARISON', message: 'Provide at least two policy ids via ?ids=a,b' }
+        });
+        return;
+      }
+
+      const topics =
+        typeof topicsParam === 'string' && topicsParam.trim()
+          ? topicsParam.split(',').map(s => s.trim()).filter(Boolean)
+          : [...DEFAULT_COMPARISON_TOPICS];
+
+      const comparison = await InsuranceService.comparePolicies(ids, topics);
+      res.status(200).json({ success: true, topics, count: comparison.length, comparison });
     } catch (error) {
       next(error);
     }

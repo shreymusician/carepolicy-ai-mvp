@@ -13,7 +13,68 @@ export interface PolicyExplainInput {
   key_exclusions?: string[];
 }
 
+export interface PolicyKnowledgeInput {
+  uin: string;
+  companyName: string;
+  productName: string;
+  documentText: string;
+  topics: readonly string[];
+}
+
 export class PromptBuilderService {
+  /**
+   * Extracts the full structured knowledge set from an official policy document.
+   * Every fact carries its own source/confidence/page so the UI can stay traceable.
+   */
+  buildPolicyKnowledgePrompt(input: PolicyKnowledgeInput): string {
+    if (!input.documentText || input.documentText.trim().length === 0) {
+      throw new PromptBuildError('Document text is required to extract policy knowledge');
+    }
+
+    const factSchema = input.topics
+      .map(t => `    "${t}": { "value": string|null, "source": string|null, "confidence": number|null, "page_number": number|null }`)
+      .join(',\n');
+
+    return `You are an insurance analyst reading an official IRDAI-approved policy document. Extract structured facts EXACTLY as stated in the document.
+
+PRODUCT: ${input.productName} (${input.companyName})
+UIN: ${input.uin}
+
+OFFICIAL POLICY DOCUMENT TEXT:
+${input.documentText}
+
+Return ONLY valid JSON in exactly this shape. No markdown, no commentary:
+{
+  "facts": {
+${factSchema}
+  },
+  "citizen_summary": string|null,
+  "worker_summary": string|null,
+  "faqs": [ { "question": string, "answer": string, "confidence": number|null, "page_number": number|null } ],
+  "claim_knowledge": {
+    "required_documents": string[],
+    "common_rejection_reasons": string[],
+    "mandatory_signatures": string[],
+    "hospital_requirements": string[],
+    "document_checklist": string[]
+  },
+  "searchable_terms": string[]
+}
+
+CRITICAL RULES — accuracy matters more than completeness:
+- If the document does not state something, set "value" to null. NEVER guess, infer, or fill from general insurance knowledge.
+- "value" must reflect what the document says (figures, durations, limits) — quote numbers exactly as written.
+- "source" = a short quoted phrase or section reference from the document supporting the value, or null.
+- "page_number" = the page the fact appears on if determinable from the text, otherwise null.
+- "confidence" = 0-100 integer reflecting how explicitly the document states it. Use null if the value is null.
+- "citizen_summary" = 2-3 plain sentences a non-expert can understand. Null if too little information.
+- "worker_summary" = 2-3 sentences for a hospital/insurance worker, focused on coverage limits and claim-relevant terms.
+- "faqs" = up to 8 questions a real policyholder would ask, answered ONLY from this document (e.g. cataract cover, adding parents, waiting period length, maternity, mental health). Omit any question the document cannot answer.
+- "claim_knowledge" = only items the document actually states; use empty arrays otherwise.
+- "searchable_terms" = lowercase keywords for search: diseases, treatments, procedures and benefits this policy explicitly mentions (e.g. "cataract", "maternity", "dengue", "ayush", "day care"). Only include terms actually present in the document.
+- Never state that a treatment is guaranteed or approved.`;
+  }
+
   buildPolicyExplainPrompt(policy: PolicyExplainInput): string {
     const facts = [
       `Insurer: ${policy.company_name}`,

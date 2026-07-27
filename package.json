@@ -9,7 +9,8 @@
     "dev": "ts-node src/app.ts",
     "type-check": "tsc --noEmit",
     "seed:insurance": "ts-node scripts/seedInsurance.ts",
-    "import:irdai": "ts-node scripts/importIrdai.ts"
+    "import:irdai": "ts-node scripts/importIrdai.ts",
+    "build:knowledge": "ts-node scripts/buildKnowledge.ts"
   },
   "keywords": [
     "healthcare",

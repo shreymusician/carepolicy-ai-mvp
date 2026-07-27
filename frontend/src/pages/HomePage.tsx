@@ -4,15 +4,15 @@ const WORKFLOW = [
   { n: 1, title: 'Explore Insurance Policies', body: 'Browse IRDAI-approved health insurance products.' },
   { n: 2, title: 'Understand Your Policy', body: 'AI explains coverage, waiting periods and exclusions in plain language.' },
   { n: 3, title: 'Analyse Medical Documents', body: 'Extract structured information from hospital paperwork.' },
-  { n: 4, title: 'Auto Fill Insurance Claim Forms', body: 'Prepare claim forms with the details already gathered.' }
+  { n: 4, title: 'Prior Authorization Assistant', body: 'Prepare prior authorization requests with AI assistance before treatment.' }
 ]
 
 const FEATURES = [
   { icon: '🔍', title: 'Insurance Explorer', body: 'Browse IRDAI-approved insurance products.', to: '/explorer' },
   { icon: '📘', title: 'Policy Intelligence', body: 'AI explains insurance policies in simple language.', to: '/explorer' },
   { icon: '🧾', title: 'Medical Intelligence', body: 'Extract structured medical information from hospital documents.', to: '/documents' },
-  { icon: '📝', title: 'Claim Assistant', body: 'Automatically prepare insurance claim forms.', to: '/claims' },
-  { icon: '💬', title: 'AI Assistant', body: 'Ask questions about insurance policies and claims.', to: '/assistant' }
+  { icon: '✅', title: 'Prior Authorization Assistant', body: 'Prepare complete prior authorization requests with AI assistance before treatment.', to: '/prior-auth' },
+  { icon: '💬', title: 'AI Assistant', body: 'Ask questions about insurance policies and prior authorization.', to: '/assistant' }
 ]
 
 const TRUST = [
@@ -36,7 +36,7 @@ export function HomePage() {
         </p>
         <p className="text-base sm:text-lg text-text-muted max-w-2xl mx-auto leading-relaxed mb-10">
           CarePolicy AI helps citizens and healthcare workers understand insurance policies, analyse medical
-          documents, and prepare insurance claims with AI assistance.
+          documents, and prepare prior authorization requests with AI assistance.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
@@ -58,7 +58,7 @@ export function HomePage() {
       <section className="bg-background-alt border-y border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
           <h2 className="text-3xl sm:text-4xl font-bold text-center mb-3">How it works</h2>
-          <p className="text-text-muted text-center mb-12">From finding a policy to a claim-ready file.</p>
+          <p className="text-text-muted text-center mb-12">From finding a policy to prior authorization readiness.</p>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
             {WORKFLOW.map((s, i) => (

@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom'
 
 const AUDIENCES = [
   { icon: '👤', title: 'Citizens', body: 'Understand what a policy actually covers before and during treatment.' },
-  { icon: '🩺', title: 'Healthcare Workers', body: 'Check coverage quickly instead of reading long policy documents.' },
-  { icon: '🏢', title: 'Insurance Staff', body: 'Reference approved product terms and prepare accurate claim files.' }
+  { icon: '🩺', title: 'Healthcare Workers', body: 'Verify insurance coverage and prepare prior authorization requests before treatment begins.' },
+  { icon: '🏢', title: 'Insurance Staff', body: 'Reference approved product terms and support prior authorization verification.' }
 ]
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -26,8 +26,8 @@ export function AboutPage() {
       <Section title="What is CarePolicy AI?">
         <p>
           CarePolicy AI is an AI-powered health insurance platform. It brings insurance product information, policy
-          understanding, medical document analysis and claim preparation into one place, so people are not left
-          decoding dense policy contracts on their own.
+          understanding, medical document analysis and prior authorization preparation into one place, so healthcare
+          workers can prepare accurate authorization requests before treatment begins, not deal with rejections after.
         </p>
       </Section>
 
@@ -55,14 +55,18 @@ export function AboutPage() {
 
       <Section title="How AI helps">
         <p>
-          The AI does not decide whether a claim is approved. It translates — taking verified policy information and
-          restating it in plain language, answering questions about a specific policy, and pulling structure out of
-          medical paperwork.
+          The AI does not decide whether prior authorization is approved. It translates — taking verified policy information and
+          restating it in plain language, answering questions about a specific policy, pulling structure out of
+          medical paperwork, and identifying missing information before requests are submitted to insurers.
         </p>
         <p>
           Because explanations are generated only from verified policy data, the AI is constrained by what the official
           documents actually say. Anything AI-written is labelled as an AI summary, so it is always clear which parts
           are the insurer's words and which are the explanation.
+        </p>
+        <p>
+          CarePolicy AI helps healthcare workers prepare prior authorization requests that are complete and accurate,
+          reducing approval delays, preventing rejections, and improving treatment readiness.
         </p>
       </Section>
 
