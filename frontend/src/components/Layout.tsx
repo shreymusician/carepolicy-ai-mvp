@@ -1,8 +1,12 @@
 import { Outlet, Link } from 'react-router-dom'
 import { Navbar } from './Navbar'
+import { CopilotProvider } from '../copilot/CopilotContext'
+import { CopilotFab } from '../copilot/CopilotFab'
+import { CopilotPanel } from '../copilot/CopilotPanel'
 
 export function Layout() {
   return (
+    <CopilotProvider>
     <div className="min-h-screen flex flex-col bg-white text-text">
       <Navbar />
       <main className="flex-1">
@@ -19,6 +23,11 @@ export function Layout() {
           </div>
         </div>
       </footer>
+
+      {/* Available on every page */}
+      <CopilotFab />
+      <CopilotPanel />
     </div>
+    </CopilotProvider>
   )
 }

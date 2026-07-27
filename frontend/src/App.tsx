@@ -7,7 +7,6 @@ import { PolicyDetailPage } from './pages/PolicyDetailPage'
 import { AnalysePage } from './pages/AnalysePage'
 import { MedicalDocumentsPage } from './pages/MedicalDocumentsPage'
 import { PriorAuthorizationPage } from './pages/PriorAuthorizationPage'
-import { AIAssistantPage } from './pages/AIAssistantPage'
 import { NetworkHospitalsPage } from './pages/NetworkHospitalsPage'
 import { AboutPage } from './pages/AboutPage'
 import './index.css'
@@ -24,7 +23,6 @@ export default function App() {
             <Route path="analyse" element={<AnalysePage />} />
             <Route path="documents" element={<MedicalDocumentsPage />} />
             <Route path="prior-auth" element={<PriorAuthorizationPage />} />
-            <Route path="assistant" element={<AIAssistantPage />} />
             <Route path="hospitals" element={<NetworkHospitalsPage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />

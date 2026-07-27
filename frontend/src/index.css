@@ -17,3 +17,93 @@ html, body {
 #root {
   min-height: 100vh;
 }
+
+/* ---------- AI Copilot ---------- */
+
+@keyframes copilot-pulse {
+  0%, 100% { box-shadow: 0 10px 25px -5px rgba(0, 102, 204, 0.35), 0 0 0 0 rgba(0, 102, 204, 0.35); }
+  50%      { box-shadow: 0 10px 25px -5px rgba(0, 102, 204, 0.35), 0 0 0 10px rgba(0, 102, 204, 0); }
+}
+
+.copilot-fab-idle {
+  animation: copilot-pulse 3.2s ease-in-out infinite;
+}
+
+@keyframes copilot-msg-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.copilot-msg {
+  animation: copilot-msg-in 0.22s ease-out both;
+}
+
+@keyframes copilot-blink {
+  0%, 80%, 100% { opacity: 0.25; transform: translateY(0); }
+  40%           { opacity: 1;    transform: translateY(-2px); }
+}
+
+.copilot-typing i {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: currentColor;
+  display: inline-block;
+  animation: copilot-blink 1.2s infinite;
+}
+.copilot-typing i:nth-child(2) { animation-delay: 0.15s; }
+.copilot-typing i:nth-child(3) { animation-delay: 0.3s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .copilot-fab-idle,
+  .copilot-msg,
+  .copilot-typing i {
+    animation: none;
+  }
+}
+
+/* Markdown inside assistant replies */
+.copilot-markdown > *:first-child { margin-top: 0; }
+.copilot-markdown > *:last-child { margin-bottom: 0; }
+.copilot-markdown p { margin: 0 0 0.6rem; line-height: 1.6; }
+.copilot-markdown strong { font-weight: 600; color: #000; }
+.copilot-markdown ul,
+.copilot-markdown ol { margin: 0 0 0.6rem; padding-left: 1.15rem; }
+.copilot-markdown ul { list-style: disc; }
+.copilot-markdown ol { list-style: decimal; }
+.copilot-markdown li { margin-bottom: 0.25rem; line-height: 1.55; }
+.copilot-markdown a { color: #0066CC; text-decoration: underline; }
+.copilot-markdown code {
+  background: #fff;
+  border: 1px solid #CCCCCC;
+  border-radius: 4px;
+  padding: 0.05rem 0.3rem;
+  font-size: 0.85em;
+}
+.copilot-markdown pre {
+  background: #fff;
+  border: 1px solid #CCCCCC;
+  border-radius: 8px;
+  padding: 0.7rem;
+  overflow-x: auto;
+  margin: 0 0 0.6rem;
+}
+.copilot-markdown pre code { border: 0; padding: 0; background: transparent; }
+.copilot-markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85em;
+  margin: 0 0 0.6rem;
+  display: block;
+  overflow-x: auto;
+}
+.copilot-markdown th,
+.copilot-markdown td {
+  border: 1px solid #CCCCCC;
+  padding: 0.3rem 0.5rem;
+  text-align: left;
+}
+.copilot-markdown th { background: #F5F5F5; font-weight: 600; }
+.copilot-markdown h1,
+.copilot-markdown h2,
+.copilot-markdown h3 { font-weight: 700; margin: 0.5rem 0 0.4rem; font-size: 1em; }

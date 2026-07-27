@@ -12,7 +12,6 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/explorer', label: 'Insurance Explorer' },
   { to: '/documents', label: 'Medical Documents' },
   { to: '/prior-auth', label: 'Prior Authorization' },
-  { to: '/assistant', label: 'AI Assistant' },
   { to: '/hospitals', label: 'Network Hospitals', disabled: true },
   { to: '/about', label: 'About' }
 ]

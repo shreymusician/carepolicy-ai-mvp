@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useCopilot } from '../copilot/CopilotContext'
 
 const WORKFLOW = [
   { n: 1, title: 'Explore Insurance Policies', body: 'Browse IRDAI-approved health insurance products.' },
@@ -7,12 +8,20 @@ const WORKFLOW = [
   { n: 4, title: 'Prior Authorization Assistant', body: 'Prepare prior authorization requests with AI assistance before treatment.' }
 ]
 
-const FEATURES = [
+interface Feature {
+  icon: string
+  title: string
+  body: string
+  to?: string
+  copilot?: boolean
+}
+
+const FEATURES: Feature[] = [
   { icon: '🔍', title: 'Insurance Explorer', body: 'Browse IRDAI-approved insurance products.', to: '/explorer' },
   { icon: '📘', title: 'Policy Intelligence', body: 'AI explains insurance policies in simple language.', to: '/explorer' },
   { icon: '🧾', title: 'Medical Intelligence', body: 'Extract structured medical information from hospital documents.', to: '/documents' },
   { icon: '✅', title: 'Prior Authorization Assistant', body: 'Prepare complete prior authorization requests with AI assistance before treatment.', to: '/prior-auth' },
-  { icon: '💬', title: 'AI Assistant', body: 'Ask questions about insurance policies and prior authorization.', to: '/assistant' }
+  { icon: '💬', title: 'AI Copilot', body: 'Ask questions about insurance policies and prior authorization, from any page.', copilot: true }
 ]
 
 const TRUST = [
@@ -23,6 +32,8 @@ const TRUST = [
 ]
 
 export function HomePage() {
+  const { open: openCopilot } = useCopilot()
+
   return (
     <div>
       {/* Hero */}
@@ -88,17 +99,27 @@ export function HomePage() {
         <p className="text-text-muted text-center mb-12">One platform across the whole insurance journey.</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {FEATURES.map(f => (
-            <Link
-              key={f.title}
-              to={f.to}
-              className="border border-border rounded-2xl p-6 hover:border-primary hover:shadow-md transition bg-white"
-            >
-              <div className="text-3xl mb-4">{f.icon}</div>
-              <h3 className="font-bold text-lg mb-2">{f.title}</h3>
-              <p className="text-sm text-text-muted leading-relaxed">{f.body}</p>
-            </Link>
-          ))}
+          {FEATURES.map(f => {
+            const inner = (
+              <>
+                <div className="text-3xl mb-4">{f.icon}</div>
+                <h3 className="font-bold text-lg mb-2">{f.title}</h3>
+                <p className="text-sm text-text-muted leading-relaxed">{f.body}</p>
+              </>
+            )
+            const cls =
+              'text-left border border-border rounded-2xl p-6 hover:border-primary hover:shadow-md transition bg-white'
+
+            return f.copilot ? (
+              <button key={f.title} onClick={openCopilot} className={cls}>
+                {inner}
+              </button>
+            ) : (
+              <Link key={f.title} to={f.to as string} className={cls}>
+                {inner}
+              </Link>
+            )
+          })}
         </div>
       </section>
 
