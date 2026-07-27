@@ -18,10 +18,10 @@ export default function App() {
     <AppStateProvider>
       <BrowserRouter>
         <Routes>
+          <Route index element={<HomePage />} />
+          <Route path="policy-holder" element={<PolicyHolderPortalPage />} />
+          <Route path="insurance-coordinator" element={<InsuranceCoordinatorPortalPage />} />
           <Route element={<Layout />}>
-            <Route index element={<HomePage />} />
-            <Route path="policy-holder" element={<PolicyHolderPortalPage />} />
-            <Route path="insurance-coordinator" element={<InsuranceCoordinatorPortalPage />} />
             <Route path="explorer" element={<InsuranceExplorerPage />} />
             <Route path="policy/:id" element={<PolicyDetailPage />} />
             <Route path="analyse" element={<AnalysePage />} />
