@@ -14,23 +14,29 @@ export interface IPremiumRange {
   is_approximate?: boolean;
 }
 
+export type VerificationStatus = 'verified' | 'unverified';
+
 export interface IInsurancePolicy extends Document {
   company_id: Types.ObjectId;
   company_name: string;
   company_logo_url: string;
   policy_name: string;
   policy_type: string;
-  description: string;
-  coverage_summary: string;
-  waiting_period: string;
-  sum_insured_range: ISumInsuredRange;
+  description?: string;
+  coverage_summary?: string;
+  waiting_period?: string;
+  eligibility?: string;
+  sum_insured_range?: ISumInsuredRange;
   premium_range?: IPremiumRange;
   target_audience: string[];
   key_benefits: string[];
   key_exclusions: string[];
   official_website?: string;
+  official_policy_pdf_url?: string;
+  source_url?: string;
+  source_fetched_at?: Date;
+  verification_status: VerificationStatus;
   is_active: boolean;
-  data_is_approximate: boolean;
   tags?: string[];
   created_at: Date;
   updated_at?: Date;
@@ -63,17 +69,27 @@ const insurancePolicySchema = new Schema<IInsurancePolicy>(
     company_logo_url: { type: String, required: true },
     policy_name: { type: String, required: true },
     policy_type: { type: String, required: true, index: true },
-    description: { type: String, required: true },
-    coverage_summary: { type: String, required: true },
-    waiting_period: { type: String, required: true },
-    sum_insured_range: { type: sumInsuredRangeSchema, required: true },
+    description: { type: String },
+    coverage_summary: { type: String },
+    waiting_period: { type: String },
+    eligibility: { type: String },
+    sum_insured_range: { type: sumInsuredRangeSchema },
     premium_range: { type: premiumRangeSchema },
-    target_audience: { type: [String], required: true, index: true },
+    target_audience: { type: [String], default: [], index: true },
     key_benefits: { type: [String], default: [] },
     key_exclusions: { type: [String], default: [] },
     official_website: { type: String },
+    official_policy_pdf_url: { type: String },
+    source_url: { type: String },
+    source_fetched_at: { type: Date },
+    verification_status: {
+      type: String,
+      enum: ['verified', 'unverified'],
+      default: 'unverified',
+      required: true,
+      index: true
+    },
     is_active: { type: Boolean, default: true, required: true, index: true },
-    data_is_approximate: { type: Boolean, default: true, required: true },
     tags: { type: [String], default: [] },
     created_at: { type: Date, default: Date.now, required: true },
     updated_at: { type: Date }

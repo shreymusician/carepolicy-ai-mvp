@@ -2,9 +2,11 @@ import { useRef, useState } from 'react'
 
 interface LandingPageProps {
   onSubmit: (formData: FormData) => void
+  selectedPolicy?: { id: string; name: string; companyName: string } | null
+  onChangePolicy?: () => void
 }
 
-export function LandingPage({ onSubmit }: LandingPageProps) {
+export function LandingPage({ onSubmit, selectedPolicy, onChangePolicy }: LandingPageProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const prescriptionInputRef = useRef<HTMLInputElement>(null)
   const policyDragRef = useRef<HTMLDivElement>(null)
@@ -97,6 +99,20 @@ export function LandingPage({ onSubmit }: LandingPageProps) {
             Making Health Insurance Understandable
           </p>
         </div>
+
+        {selectedPolicy && (
+          <div className="mb-8 flex items-center justify-between gap-4 bg-blue-50 border border-blue-200 rounded-lg px-5 py-4">
+            <div>
+              <p className="text-xs font-semibold text-primary uppercase tracking-wide">Selected Policy</p>
+              <p className="text-text font-semibold">{selectedPolicy.companyName} — {selectedPolicy.name}</p>
+            </div>
+            {onChangePolicy && (
+              <button onClick={onChangePolicy} className="text-sm text-primary hover:underline whitespace-nowrap">
+                Change
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Main Content */}
         <form onSubmit={handleSubmit} className="w-full">

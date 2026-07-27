@@ -48,7 +48,7 @@ export function errorHandler(err: Error, _req: Request, res: Response, _next: Ne
     errorType = 'StorageError';
   } else if (err instanceof NotFoundError) {
     status = 404;
-    message = 'Analysis not found';
+    message = err.message;
     errorType = 'NotFoundError';
   } else if (err.message.includes('MONGODB_URI')) {
     status = 503;

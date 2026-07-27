@@ -1,7 +1,38 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\HP\\\\Desktop\\\\healthcare\"; npm run type-check; echo \"TypeCheck: $LASTEXITCODE\")",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\HP\\\\Desktop\\\\healthcare\"; npm run build; echo \"Build: $LASTEXITCODE\")",
+      "Bash(npx ts-node *)",
+      "Bash(cat /tmp/server.log 2>&1 | tail -50)",
+      "Bash(curl -s \"http://localhost:5000/api/v1/insurance/policies?policyType=family_floater\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(d['policy']['policy_name'], '-', d['policy']['company_name']\\)\")",
+      "Bash(curl -s \"http://localhost:5000/api/v1/insurance/search?q=health&targetAudience=senior_citizen\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('count:', d['count']\\); print\\([p['policy_name'] for p in d['policies']]\\)\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:5000/api/v1/insurance/policies/000000000000000000000000)",
+      "Bash(pkill -f \"node dist/app.js\")",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\HP\\\\Desktop\\\\healthcare\\\\frontend\"; npm run type-check; echo \"Frontend TypeCheck: $LASTEXITCODE\")",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\HP\\\\Desktop\\\\healthcare\"; npm run type-check; echo \"Backend TypeCheck: $LASTEXITCODE\")",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\HP\\\\Desktop\\\\healthcare\\\\frontend\"; npm run build; echo \"Frontend Build: $LASTEXITCODE\")",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\HP\\\\Desktop\\\\healthcare\"; npm run build; echo \"Backend Build: $LASTEXITCODE\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" https://www.google.com)",
+      "Bash(curl -sv https://registry.npmjs.org)",
+      "Bash(curl -sv https://logo.clearbit.com/hdfcergo.com)",
+      "WebSearch",
+      "Bash(curl -sL -o /dev/null -w \"%{http_code} %{content_type} size=%{size_download}\\\\n\" \"https://www.sbigeneral.in/favicon.ico\")",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\HP\\\\Desktop\\\\healthcare\"; npm run type-check; echo \"Backend: $LASTEXITCODE\")",
+      "WebFetch(domain:www.starhealth.in)",
+      "WebFetch(domain:www.careinsurance.com)",
+      "Bash(node -e ' *)",
+      "Bash(node readpdf-temp.js /tmp/pdfs/care-supreme---brochure.pdf)",
+      "Bash(node readpdf-temp.js /tmp/pdfs/hdfc-optimasecure-cis.pdf)",
+      "Bash(rm -f readpdf-temp.js ext-temp.js)",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\HP\\\\Desktop\\\\healthcare\"; npm run type-check; echo \"BE-TC: $LASTEXITCODE\"; npm run build; echo \"BE-BUILD: $LASTEXITCODE\")",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\HP\\\\Desktop\\\\healthcare\\\\frontend\"; npm run type-check; echo \"FE-TC: $LASTEXITCODE\")",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\HP\\\\Desktop\\\\healthcare\\\\frontend\"; npm run build 2>&1 | Select-Object -Last 8; echo \"FE-BUILD: $LASTEXITCODE\")",
+      "Bash(curl -s \"http://localhost:5000/api/v1/insurance/policies?verificationStatus=verified\")",
+      "Bash(python3 -c ' *)"
     ]
   }
 }

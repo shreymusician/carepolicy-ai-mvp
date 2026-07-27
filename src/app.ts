@@ -3,6 +3,7 @@ import express from 'express';
 import { connectToDatabase } from './config/mongodb';
 import { errorHandler } from './middleware/errorHandler';
 import analysisRoutes from './routes/analysis';
+import insuranceRoutes from './routes/insurance';
 import ConfigService from './config/service';
 import { setLogger, ConsoleLogger } from './utils/logger';
 import {
@@ -62,6 +63,7 @@ app.get('/health', (req, res) => {
 
 // API routes (with versioning)
 app.use('/api/v1', analysisRoutes);
+app.use('/api/v1', insuranceRoutes);
 
 // 404 handler
 app.use((_req, res) => {

@@ -6,6 +6,7 @@ export interface PolicyFilters {
   company?: string;
   policyType?: string;
   targetAudience?: string;
+  verificationStatus?: string;
 }
 
 export class InsuranceService {
@@ -14,19 +15,7 @@ export class InsuranceService {
   }
 
   async listPolicies(filters: PolicyFilters = {}): Promise<IInsurancePolicy[]> {
-    const query: Record<string, unknown> = { is_active: true };
-
-    if (filters.company) {
-      query.company_name = new RegExp(this.escapeRegex(filters.company), 'i');
-    }
-    if (filters.policyType) {
-      query.policy_type = new RegExp(`^${this.escapeRegex(filters.policyType)}$`, 'i');
-    }
-    if (filters.targetAudience) {
-      query.target_audience = new RegExp(this.escapeRegex(filters.targetAudience), 'i');
-    }
-
-    return InsurancePolicy.find(query).sort({ company_name: 1, policy_name: 1 });
+    return InsurancePolicy.find(this.buildQuery(filters)).sort({ company_name: 1, policy_name: 1 });
   }
 
   async getPolicyById(id: string): Promise<IInsurancePolicy> {
@@ -38,6 +27,20 @@ export class InsuranceService {
   }
 
   async search(q: string, filters: PolicyFilters = {}): Promise<IInsurancePolicy[]> {
+    const query = this.buildQuery(filters);
+
+    if (q && q.trim().length > 0) {
+      query.$text = { $search: q.trim() };
+      return InsurancePolicy.find(query, { score: { $meta: 'textScore' } })
+        .sort({ score: { $meta: 'textScore' } })
+        .limit(50);
+    }
+
+    return InsurancePolicy.find(query).sort({ company_name: 1, policy_name: 1 }).limit(50);
+  }
+
+  // Filters are additive — new ones can be appended without changing callers.
+  private buildQuery(filters: PolicyFilters): Record<string, unknown> {
     const query: Record<string, unknown> = { is_active: true };
 
     if (filters.company) {
@@ -49,15 +52,11 @@ export class InsuranceService {
     if (filters.targetAudience) {
       query.target_audience = new RegExp(this.escapeRegex(filters.targetAudience), 'i');
     }
-
-    if (q && q.trim().length > 0) {
-      query.$text = { $search: q.trim() };
-      return InsurancePolicy.find(query, { score: { $meta: 'textScore' } })
-        .sort({ score: { $meta: 'textScore' } })
-        .limit(50);
+    if (filters.verificationStatus) {
+      query.verification_status = filters.verificationStatus;
     }
 
-    return InsurancePolicy.find(query).sort({ company_name: 1, policy_name: 1 }).limit(50);
+    return query;
   }
 
   private escapeRegex(value: string): string {

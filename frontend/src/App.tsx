@@ -1,10 +1,17 @@
 import { useState } from 'react'
+import { InsuranceDiscoveryPage } from './pages/InsuranceDiscoveryPage'
 import { LandingPage } from './pages/LandingPage'
 import { ProcessingPage } from './pages/ProcessingPage'
 import { ResultsPage } from './pages/ResultsPage'
 import './index.css'
 
-export type AppState = 'landing' | 'processing' | 'results' | 'error'
+export type AppState = 'discovery' | 'landing' | 'processing' | 'results' | 'error'
+
+interface SelectedPolicy {
+  id: string
+  name: string
+  companyName: string
+}
 
 interface AnalysisData {
   document_id: string
@@ -19,9 +26,15 @@ interface ErrorState {
 }
 
 export default function App() {
-  const [state, setState] = useState<AppState>('landing')
+  const [state, setState] = useState<AppState>('discovery')
+  const [selectedPolicy, setSelectedPolicy] = useState<SelectedPolicy | null>(null)
   const [analysis, setAnalysis] = useState<AnalysisData | null>(null)
   const [error, setError] = useState<ErrorState | null>(null)
+
+  const handleSelectPolicy = (policy: SelectedPolicy) => {
+    setSelectedPolicy(policy)
+    setState('landing')
+  }
 
   const handleAnalysisStart = async (formData: FormData) => {
     setState('processing')
@@ -58,7 +71,8 @@ export default function App() {
   }
 
   const handleReset = () => {
-    setState('landing')
+    setState('discovery')
+    setSelectedPolicy(null)
     setAnalysis(null)
     setError(null)
   }
@@ -71,7 +85,19 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      {state === 'landing' && <LandingPage onSubmit={handleAnalysisStart} />}
+      {state === 'discovery' && (
+        <InsuranceDiscoveryPage
+          onSelectPolicy={handleSelectPolicy}
+          onSkip={() => setState('landing')}
+        />
+      )}
+      {state === 'landing' && (
+        <LandingPage
+          onSubmit={handleAnalysisStart}
+          selectedPolicy={selectedPolicy}
+          onChangePolicy={() => setState('discovery')}
+        />
+      )}
       {state === 'processing' && <ProcessingPage />}
       {state === 'results' && analysis && <ResultsPage data={analysis} onReset={handleReset} />}
       {state === 'error' && (

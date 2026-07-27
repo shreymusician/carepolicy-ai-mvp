@@ -13,11 +13,12 @@ export class InsuranceController {
 
   async getPolicies(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { company, policyType, targetAudience } = req.query;
+      const { company, policyType, targetAudience, verificationStatus } = req.query;
       const policies = await InsuranceService.listPolicies({
         company: typeof company === 'string' ? company : undefined,
         policyType: typeof policyType === 'string' ? policyType : undefined,
-        targetAudience: typeof targetAudience === 'string' ? targetAudience : undefined
+        targetAudience: typeof targetAudience === 'string' ? targetAudience : undefined,
+        verificationStatus: typeof verificationStatus === 'string' ? verificationStatus : undefined
       });
       res.status(200).json({ success: true, count: policies.length, policies });
     } catch (error) {
@@ -36,11 +37,12 @@ export class InsuranceController {
 
   async search(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { q, company, policyType, targetAudience } = req.query;
+      const { q, company, policyType, targetAudience, verificationStatus } = req.query;
       const policies = await InsuranceService.search(typeof q === 'string' ? q : '', {
         company: typeof company === 'string' ? company : undefined,
         policyType: typeof policyType === 'string' ? policyType : undefined,
-        targetAudience: typeof targetAudience === 'string' ? targetAudience : undefined
+        targetAudience: typeof targetAudience === 'string' ? targetAudience : undefined,
+        verificationStatus: typeof verificationStatus === 'string' ? verificationStatus : undefined
       });
       res.status(200).json({ success: true, count: policies.length, policies });
     } catch (error) {
