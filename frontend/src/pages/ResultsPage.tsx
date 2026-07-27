@@ -1,6 +1,14 @@
+import { useState } from 'react'
+
 interface ResultsPageProps {
   data: any
   onReset?: () => void
+}
+
+interface ChatMessage {
+  question: string
+  answer?: string
+  error?: string
 }
 
 export function ResultsPage({ data, onReset }: ResultsPageProps) {
@@ -130,6 +138,9 @@ export function ResultsPage({ data, onReset }: ResultsPageProps) {
           </Section>
         )}
 
+        {/* Ask CarePolicy AI */}
+        <ChatWidget documentId={data.document_id} />
+
         {/* Footer Actions */}
         <div className="mt-12 pt-8 border-t border-border">
           <div className="flex flex-col sm:flex-row gap-4">
@@ -208,6 +219,110 @@ function FactCard({ label, value }: { label: string; value: any }) {
           </span>
         </div>
       )}
+    </div>
+  )
+}
+
+function ChatWidget({ documentId }: { documentId: string }) {
+  const [question, setQuestion] = useState('')
+  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [loading, setLoading] = useState(false)
+
+  const handleAsk = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const trimmed = question.trim()
+    if (!trimmed || loading) return
+
+    setLoading(true)
+    setQuestion('')
+    setMessages(prev => [...prev, { question: trimmed }])
+
+    try {
+      const response = await fetch(`/api/v1/chat/${documentId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: trimmed })
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data?.error?.message || 'Something went wrong. Please try again.')
+      }
+
+      setMessages(prev =>
+        prev.map((m, idx) => (idx === prev.length - 1 ? { ...m, answer: data.answer } : m))
+      )
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again.'
+      setMessages(prev =>
+        prev.map((m, idx) => (idx === prev.length - 1 ? { ...m, error: errorMessage } : m))
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="mt-12 pt-8 border-t border-border">
+      <div className="flex items-center gap-3 mb-5">
+        <span className="text-2xl">💬</span>
+        <h2 className="text-2xl sm:text-3xl font-bold text-text">Ask CarePolicy AI</h2>
+      </div>
+      <p className="text-text-muted mb-6">
+        Ask a question about this policy — e.g. "Is knee surgery covered?" or "What's my waiting period?"
+      </p>
+
+      {messages.length > 0 && (
+        <div className="space-y-4 mb-6">
+          {messages.map((m, idx) => (
+            <div key={idx} className="space-y-2">
+              <div className="flex justify-end">
+                <div className="bg-primary text-white rounded-lg px-4 py-3 max-w-[85%] sm:max-w-[70%]">
+                  {m.question}
+                </div>
+              </div>
+              <div className="flex justify-start">
+                {m.answer ? (
+                  <div className="bg-background-alt border border-border rounded-lg px-4 py-3 max-w-[85%] sm:max-w-[70%] text-text-light">
+                    {m.answer}
+                  </div>
+                ) : m.error ? (
+                  <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 max-w-[85%] sm:max-w-[70%] text-red-800">
+                    {m.error}
+                  </div>
+                ) : (
+                  <div className="bg-background-alt border border-border rounded-lg px-4 py-3 text-text-muted italic">
+                    Thinking...
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <form onSubmit={handleAsk} className="flex flex-col sm:flex-row gap-3">
+        <input
+          type="text"
+          value={question}
+          onChange={e => setQuestion(e.target.value)}
+          placeholder="Type your question..."
+          disabled={loading}
+          className="flex-1 border border-border rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
+        />
+        <button
+          type="submit"
+          disabled={loading || !question.trim()}
+          className={`px-6 py-3 rounded-lg font-semibold text-white transition ${
+            loading || !question.trim()
+              ? 'bg-text-muted cursor-not-allowed opacity-50'
+              : 'bg-primary hover:bg-blue-700 cursor-pointer'
+          }`}
+        >
+          {loading ? 'Asking...' : 'Ask'}
+        </button>
+      </form>
     </div>
   )
 }

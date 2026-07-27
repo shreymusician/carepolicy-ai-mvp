@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
 import AnalysisController from '../controllers/AnalysisController';
+import ChatController from '../controllers/ChatController';
 
 const router = Router();
 
@@ -37,6 +38,13 @@ router.post(
     { name: 'prescription', maxCount: 1 }
   ]),
   (req, res, next) => AnalysisController.analyze(req, res, next)
+);
+
+// POST /api/v1/chat/:documentId
+// Ask a natural-language question about a previously analyzed policy
+router.post(
+  '/chat/:documentId',
+  (req, res, next) => ChatController.ask(req, res, next)
 );
 
 export default router;

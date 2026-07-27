@@ -1,6 +1,50 @@
-import { PromptBuildError } from '../types/analysis';
+import { PromptBuildError, AnalysisResult } from '../types/analysis';
 
 export class PromptBuilderService {
+  buildChatPrompt(analysisResult: AnalysisResult, question: string): string {
+    if (!question || typeof question !== 'string' || question.trim().length === 0) {
+      throw new PromptBuildError('Question is required and must be non-empty');
+    }
+
+    const analysis = analysisResult.document_analysis;
+
+    const context = `POLICY FACTS:
+${JSON.stringify(analysis.extracted_facts.policy_information, null, 2)}
+
+EXCLUSIONS:
+${JSON.stringify(analysis.extracted_facts.exclusions, null, 2)}
+
+COVERAGE SUMMARY:
+- What is covered: ${analysis.ai_generated_knowledge.policy_summary.what_is_covered}
+- What is NOT covered: ${analysis.ai_generated_knowledge.policy_summary.what_is_not_covered}
+- Key points: ${analysis.ai_generated_knowledge.policy_summary.key_points.join('; ')}
+
+RELEVANT CLAUSES:
+${JSON.stringify(analysis.ai_generated_knowledge.relevant_clauses, null, 2)}
+
+RISK ASSESSMENT:
+${JSON.stringify(analysis.risk_assessment, null, 2)}
+${analysis.treatment_specific_summary
+  ? `\nTREATMENT-SPECIFIC SUMMARY:\n${JSON.stringify(analysis.treatment_specific_summary, null, 2)}`
+  : ''}`;
+
+    return `You are CarePolicy AI, answering a patient's question about their own insurance policy using ONLY the analysis context below. Do not invent facts that are not present in the context.
+
+${context}
+
+USER QUESTION:
+${question}
+
+INSTRUCTIONS:
+- Answer in 2-4 short sentences, plain language, no jargon.
+- Base your answer strictly on the context above.
+- If the context does not contain enough information to answer confidently, say so clearly and suggest the user confirm with their insurer.
+- Use cautious language ("appears to", "may", "likely") — never claim a treatment is definitely approved or rejected.
+- Return plain text only. Do NOT return JSON or markdown formatting.
+
+ANSWER:`;
+  }
+
   buildAnalysisPrompt(policyText: string, prescriptionText?: string): string {
     try {
       if (!policyText || typeof policyText !== 'string' || policyText.trim().length === 0) {

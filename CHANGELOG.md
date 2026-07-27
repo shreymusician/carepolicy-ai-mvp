@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.0] - 2026-07-27
+
+### Added
+- `POST /api/v1/chat/:documentId` — ask natural-language questions about a previously analyzed policy
+- `PromptBuilderService.buildChatPrompt()` reuses stored analysis as context for Gemini
+- Chat widget on the results page (question box + simple Q&A thread)
+
 ## [0.6.0] - 2026-07-27
 
 ### Changed (AI Provider Migration: Anthropic Claude → Google Gemini)
