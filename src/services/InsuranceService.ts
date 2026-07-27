@@ -7,6 +7,8 @@ export interface PolicyFilters {
   policyType?: string;
   targetAudience?: string;
   verificationStatus?: string;
+  sourceType?: string;
+  uin?: string;
 }
 
 export class InsuranceService {
@@ -54,6 +56,12 @@ export class InsuranceService {
     }
     if (filters.verificationStatus) {
       query.verification_status = filters.verificationStatus;
+    }
+    if (filters.sourceType) {
+      query.source_type = filters.sourceType.toUpperCase();
+    }
+    if (filters.uin) {
+      query.uin = filters.uin.toUpperCase();
     }
 
     return query;

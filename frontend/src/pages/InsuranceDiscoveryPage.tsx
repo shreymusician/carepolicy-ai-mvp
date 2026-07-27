@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { InfoBadge, TrustNote, PENDING_DETAILS_NOTE } from '../components/InfoBadge'
 
 interface Company {
   _id: string
@@ -75,7 +76,8 @@ export function InsuranceDiscoveryPage({ onSelectPolicy, onSkip }: InsuranceDisc
       <div className="border-b border-border">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
           <h1 className="text-4xl sm:text-5xl font-bold text-text mb-2">Find Your Insurance Policy</h1>
-          <p className="text-text-muted text-lg">Search and select a policy to understand its coverage</p>
+          <p className="text-text-muted text-lg mb-3">Search and select a policy to understand its coverage</p>
+          <TrustNote />
         </div>
       </div>
 
@@ -165,16 +167,12 @@ export function InsuranceDiscoveryPage({ onSelectPolicy, onSkip }: InsuranceDisc
                   </p>
                 )}
 
-                <div className="mt-3 pt-3 border-t border-border">
-                  {policy.verification_status === 'verified' ? (
-                    <span className="text-xs font-semibold text-green-700">
-                      ✓ Verified from official insurer document
-                    </span>
-                  ) : (
-                    <span className="text-xs font-semibold text-orange-700">
-                      ⚠ Details not yet verified — refer to the insurer's official policy document
-                    </span>
-                  )}
+                {!policy.description && !policy.coverage_summary && !policy.waiting_period && (
+                  <p className="text-sm text-text-muted italic">{PENDING_DETAILS_NOTE}</p>
+                )}
+
+                <div className="mt-4 pt-3 border-t border-border">
+                  <InfoBadge level={policy.verification_status === 'verified' ? 'official' : 'basic'} />
                 </div>
               </button>
             ))}

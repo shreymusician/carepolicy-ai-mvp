@@ -8,7 +8,8 @@
     "start": "node dist/app.js",
     "dev": "ts-node src/app.ts",
     "type-check": "tsc --noEmit",
-    "seed:insurance": "ts-node scripts/seedInsurance.ts"
+    "seed:insurance": "ts-node scripts/seedInsurance.ts",
+    "import:irdai": "ts-node scripts/importIrdai.ts"
   },
   "keywords": [
     "healthcare",

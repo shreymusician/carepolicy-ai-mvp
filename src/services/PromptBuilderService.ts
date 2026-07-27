@@ -1,6 +1,61 @@
 import { PromptBuildError, AnalysisResult } from '../types/analysis';
 
+export interface PolicyExplainInput {
+  company_name: string;
+  policy_name: string;
+  policy_type: string;
+  description?: string;
+  coverage_summary?: string;
+  waiting_period?: string;
+  eligibility?: string;
+  sum_insured_label?: string;
+  key_benefits?: string[];
+  key_exclusions?: string[];
+}
+
 export class PromptBuilderService {
+  buildPolicyExplainPrompt(policy: PolicyExplainInput): string {
+    const facts = [
+      `Insurer: ${policy.company_name}`,
+      `Plan name: ${policy.policy_name}`,
+      `Plan type: ${policy.policy_type}`,
+      policy.description ? `Description: ${policy.description}` : null,
+      policy.coverage_summary ? `Coverage (official wording): ${policy.coverage_summary}` : null,
+      policy.waiting_period ? `Waiting periods (official wording): ${policy.waiting_period}` : null,
+      policy.eligibility ? `Eligibility (official wording): ${policy.eligibility}` : null,
+      policy.sum_insured_label ? `Sum insured options: ${policy.sum_insured_label}` : null,
+      policy.key_benefits?.length ? `Listed benefits: ${policy.key_benefits.join('; ')}` : null,
+      policy.key_exclusions?.length ? `Listed limits/exclusions: ${policy.key_exclusions.join('; ')}` : null
+    ]
+      .filter(Boolean)
+      .join('\n');
+
+    if (!facts.trim()) {
+      throw new PromptBuildError('No policy information available to explain');
+    }
+
+    return `You are CarePolicy AI. Rewrite the official insurance information below into plain, everyday language that someone with no insurance knowledge can understand.
+
+OFFICIAL INFORMATION (transcribed from the insurer's own documents):
+${facts}
+
+Return ONLY valid JSON in exactly this shape, no markdown:
+{
+  "in_simple_terms": "2-3 short sentences explaining what this plan is, in everyday words",
+  "what_it_covers": ["short plain-language point", "..."],
+  "what_to_watch_out_for": ["short plain-language point about waiting periods, limits or exclusions", "..."],
+  "who_its_for": "one short sentence describing the kind of person/family this plan suits",
+  "waiting_period_explained": "plain-language explanation of the waiting periods, or empty string if none were provided"
+}
+
+RULES:
+- Use ONLY the information above. Do not add facts, numbers, or benefits that are not stated.
+- Translate jargon: 'sum insured' = the maximum amount the insurer pays per year; 'pre-existing disease waiting period' = how long you must wait before conditions you already had are covered; 'indemnity' = reimburses actual bills.
+- Keep every point under 20 words. Avoid insurance jargon in the output.
+- If a section has no supporting information, return an empty array or empty string for it.
+- Never state that a specific treatment is approved or guaranteed.`;
+  }
+
   buildChatPrompt(analysisResult: AnalysisResult, question: string): string {
     if (!question || typeof question !== 'string' || question.trim().length === 0) {
       throw new PromptBuildError('Question is required and must be non-empty');

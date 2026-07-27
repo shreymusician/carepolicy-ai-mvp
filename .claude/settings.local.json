@@ -32,7 +32,10 @@
       "PowerShell(Set-Location \"C:\\\\Users\\\\HP\\\\Desktop\\\\healthcare\\\\frontend\"; npm run type-check; echo \"FE-TC: $LASTEXITCODE\")",
       "PowerShell(Set-Location \"C:\\\\Users\\\\HP\\\\Desktop\\\\healthcare\\\\frontend\"; npm run build 2>&1 | Select-Object -Last 8; echo \"FE-BUILD: $LASTEXITCODE\")",
       "Bash(curl -s \"http://localhost:5000/api/v1/insurance/policies?verificationStatus=verified\")",
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\HP\\\\Desktop\\\\healthcare\\\\frontend\"; npm run build 2>&1 | Select-Object -Last 7; echo \"FE-BUILD: $LASTEXITCODE\")",
+      "PowerShell(Set-Location \"C:\\\\Users\\\\HP\\\\Desktop\\\\healthcare\"; npm run type-check; echo \"BE-TC: $LASTEXITCODE\")",
+      "Bash(pkill -f \"vite\")"
     ]
   }
 }

@@ -15,11 +15,13 @@ export interface IPremiumRange {
 }
 
 export type VerificationStatus = 'verified' | 'unverified';
+export type SourceType = 'IRDAI' | 'INSURER';
+export type ProductStatus = 'active' | 'withdrawn' | 'unknown';
 
 export interface IInsurancePolicy extends Document {
-  company_id: Types.ObjectId;
+  company_id?: Types.ObjectId;
   company_name: string;
-  company_logo_url: string;
+  company_logo_url?: string;
   policy_name: string;
   policy_type: string;
   description?: string;
@@ -31,11 +33,20 @@ export interface IInsurancePolicy extends Document {
   target_audience: string[];
   key_benefits: string[];
   key_exclusions: string[];
-  official_website?: string;
+
+  // IRDAI provenance
+  uin?: string;
+  irdai_approval_date?: Date;
+  product_status: ProductStatus;
+  customer_information_sheet_url?: string;
   official_policy_pdf_url?: string;
+  official_website?: string;
   source_url?: string;
+  source_type?: SourceType;
   source_fetched_at?: Date;
+  last_verified_at?: Date;
   verification_status: VerificationStatus;
+
   is_active: boolean;
   tags?: string[];
   created_at: Date;
@@ -64,9 +75,9 @@ const premiumRangeSchema = new Schema<IPremiumRange>(
 
 const insurancePolicySchema = new Schema<IInsurancePolicy>(
   {
-    company_id: { type: Schema.Types.ObjectId, ref: 'InsuranceCompany', required: true, index: true },
+    company_id: { type: Schema.Types.ObjectId, ref: 'InsuranceCompany', index: true },
     company_name: { type: String, required: true, index: true },
-    company_logo_url: { type: String, required: true },
+    company_logo_url: { type: String },
     policy_name: { type: String, required: true },
     policy_type: { type: String, required: true, index: true },
     description: { type: String },
@@ -78,10 +89,22 @@ const insurancePolicySchema = new Schema<IInsurancePolicy>(
     target_audience: { type: [String], default: [], index: true },
     key_benefits: { type: [String], default: [] },
     key_exclusions: { type: [String], default: [] },
+    uin: { type: String, index: true, sparse: true, unique: true },
+    irdai_approval_date: { type: Date },
+    product_status: {
+      type: String,
+      enum: ['active', 'withdrawn', 'unknown'],
+      default: 'unknown',
+      required: true,
+      index: true
+    },
+    customer_information_sheet_url: { type: String },
     official_website: { type: String },
     official_policy_pdf_url: { type: String },
     source_url: { type: String },
+    source_type: { type: String, enum: ['IRDAI', 'INSURER'], index: true },
     source_fetched_at: { type: Date },
+    last_verified_at: { type: Date },
     verification_status: {
       type: String,
       enum: ['verified', 'unverified'],

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { InfoBadge, TrustNote, type InfoLevel } from '../components/InfoBadge'
 
 interface ResultsPageProps {
   data: any
@@ -31,7 +32,7 @@ export function ResultsPage({ data, onReset }: ResultsPageProps) {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
 
         {/* Executive Summary */}
-        <Section icon="📋" title="Coverage Summary">
+        <Section icon="📋" title="Coverage Summary" badge="ai">
           <p className="text-lg leading-relaxed text-text-light mb-6">
             {summary.what_is_covered}
           </p>
@@ -51,7 +52,7 @@ export function ResultsPage({ data, onReset }: ResultsPageProps) {
         </Section>
 
         {/* What's NOT Covered */}
-        <Section icon="⛔" title="What's NOT Covered">
+        <Section icon="⛔" title="What's NOT Covered" badge="ai">
           <p className="text-base leading-relaxed text-text-light mb-6">
             {summary.what_is_not_covered}
           </p>
@@ -99,7 +100,7 @@ export function ResultsPage({ data, onReset }: ResultsPageProps) {
         )}
 
         {/* Policy Details */}
-        <Section icon="📄" title="Policy Details">
+        <Section icon="📄" title="Policy Details" badge="official">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {Object.entries(analysis.extracted_facts.policy_information).map(([key, value]: any) => (
               <FactCard key={key} label={key} value={value} />
@@ -109,7 +110,7 @@ export function ResultsPage({ data, onReset }: ResultsPageProps) {
 
         {/* Treatment-Specific Info */}
         {data.metadata.prescription_provided && analysis.treatment_specific_summary && (
-          <Section icon="💊" title="Your Treatment Coverage" highlight="blue">
+          <Section icon="💊" title="Your Treatment Coverage" highlight="blue" badge="ai">
             <p className="text-lg leading-relaxed text-text-light mb-6">
               {analysis.treatment_specific_summary.coverage_explanation}
             </p>
@@ -161,6 +162,7 @@ export function ResultsPage({ data, onReset }: ResultsPageProps) {
 
         {/* Metadata */}
         <div className="mt-8 p-4 bg-background-alt rounded text-xs text-text-muted text-center">
+          <div className="mb-2"><TrustNote /></div>
           <p>Document ID: {data.document_id}</p>
           <p>Analysis completed in {(data.metadata.processing_time_ms / 1000).toFixed(1)}s</p>
         </div>
@@ -173,19 +175,21 @@ interface SectionProps {
   icon?: string
   title: string
   highlight?: 'red' | 'blue'
+  badge?: InfoLevel
   children: React.ReactNode
 }
 
-function Section({ icon, title, highlight, children }: SectionProps) {
+function Section({ icon, title, highlight, badge, children }: SectionProps) {
   return (
     <div className="mb-10 sm:mb-14">
-      <div className="flex items-center gap-3 mb-5">
+      <div className="flex flex-wrap items-center gap-3 mb-5">
         {icon && <span className="text-2xl">{icon}</span>}
         <h2 className={`text-2xl sm:text-3xl font-bold ${
           highlight === 'red' ? 'text-red-900' : highlight === 'blue' ? 'text-blue-900' : 'text-text'
         }`}>
           {title}
         </h2>
+        {badge && <InfoBadge level={badge} />}
       </div>
       <div className={highlight ? (highlight === 'red' ? 'bg-red-50/50' : 'bg-blue-50/50') : ''}>
         <div className={highlight ? (highlight === 'red' ? 'p-6' : 'p-6') : ''}>
@@ -197,8 +201,17 @@ function Section({ icon, title, highlight, children }: SectionProps) {
 }
 
 function FactCard({ label, value }: { label: string; value: any }) {
-  const val = value.value || value
-  const confidence = value.confidence
+  const raw = value?.value ?? value
+  const val = typeof raw === 'string' ? raw.trim() : raw
+  const confidence = value?.confidence
+
+  const isEmpty =
+    val === null ||
+    val === undefined ||
+    val === '' ||
+    (typeof val === 'string' && ['null', 'n/a', 'na', 'not available', 'unknown', 'not stated'].includes(val.toLowerCase()))
+
+  if (isEmpty) return null
 
   return (
     <div className="border border-border rounded-lg p-4 hover:shadow-md transition">
@@ -208,14 +221,17 @@ function FactCard({ label, value }: { label: string; value: any }) {
       <p className="text-xl font-bold text-primary mt-2 break-words">{val}</p>
       {confidence && (
         <div className="mt-3 flex items-center gap-2">
-          <span className={`text-xs font-semibold px-2 py-1 rounded ${
-            confidence === 'high'
-              ? 'bg-green-100 text-green-700'
-              : confidence === 'medium'
-              ? 'bg-yellow-100 text-yellow-700'
-              : 'bg-orange-100 text-orange-700'
-          }`}>
-            {confidence === 'high' ? '✓ Confirmed' : confidence === 'medium' ? '⚠ Uncertain' : 'Low confidence'}
+          <span
+            title={
+              confidence === 'high'
+                ? 'Read directly from your policy document.'
+                : 'Found in your document, but worth confirming with your insurer.'
+            }
+            className={`text-xs font-semibold px-2 py-1 rounded ${
+              confidence === 'high' ? 'bg-green-50 text-green-800' : 'bg-amber-50 text-amber-800'
+            }`}
+          >
+            {confidence === 'high' ? '🟢 From your document' : '🟡 Worth confirming'}
           </span>
         </div>
       )}

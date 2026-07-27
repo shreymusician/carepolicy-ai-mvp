@@ -108,7 +108,7 @@ export function LandingPage({ onSubmit, selectedPolicy, onChangePolicy }: Landin
             </div>
             {onChangePolicy && (
               <button onClick={onChangePolicy} className="text-sm text-primary hover:underline whitespace-nowrap">
-                Change
+                Back
               </button>
             )}
           </div>
