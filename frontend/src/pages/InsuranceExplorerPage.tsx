@@ -79,7 +79,7 @@ export function InsuranceExplorerPage() {
   }, [query, selectedCompany, selectedType])
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="bg-white">
       <div className="border-b border-border">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
           <h1 className="text-4xl sm:text-5xl font-bold text-text mb-2">Find Your Insurance Policy</h1>

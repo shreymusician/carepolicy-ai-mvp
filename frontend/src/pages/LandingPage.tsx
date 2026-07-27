@@ -90,7 +90,7 @@ export function LandingPage({ onSubmit, selectedPolicy, onChangePolicy }: Landin
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 py-12">
+    <div className="bg-white flex flex-col items-center justify-center px-4 py-12">
       <div className="max-w-2xl w-full">
         {/* Header */}
         <div className="mb-12 text-center">

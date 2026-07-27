@@ -111,7 +111,7 @@ export function PolicyDetailPage() {
   const uin = policy.uin || policy.tags?.find(t => t.startsWith('UIN:'))?.replace('UIN:', '')
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="bg-white">
       {/* Header */}
       <div className="border-b border-border">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
@@ -325,18 +325,30 @@ export function PolicyDetailPage() {
             )}
           </div>
 
-          {hasOfficialDetails && (
-            <div className="mt-6 pt-5 border-t border-border">
-              <p className="text-sm text-text-muted mb-3">
-                Have this policy yourself? Upload your document for a personalised review of your own cover.
-              </p>
-              <button onClick={onUploadDocuments} className="text-primary font-semibold hover:underline text-sm">
-                Analyse my policy document →
-              </button>
-            </div>
-          )}
-
           <div className="mt-6"><TrustNote /></div>
+        </section>
+
+        {/* Start claim process */}
+        <section className="border-t border-border pt-8 mt-10">
+          <h2 className="text-2xl font-bold text-text mb-2">Start Claim Process</h2>
+          <p className="text-text-muted mb-6 leading-relaxed">
+            Analyse your own policy document to get a personalised review of your cover, then continue into medical
+            documents and claim preparation.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={onUploadDocuments}
+              className="flex-1 bg-primary text-white font-semibold py-3 px-6 rounded-xl hover:bg-blue-700 transition"
+            >
+              Analyse My Policy Document
+            </button>
+            <button
+              onClick={() => navigate('/documents')}
+              className="flex-1 border-2 border-primary text-primary font-semibold py-3 px-6 rounded-xl hover:bg-blue-50 transition"
+            >
+              Medical Documents
+            </button>
+          </div>
         </section>
       </div>
     </div>
@@ -348,6 +360,33 @@ function DetailRow({ title, body }: { title: string; body: string }) {
     <div>
       <p className="text-xs font-semibold text-text-muted uppercase tracking-wide mb-1">{title}</p>
       <p className="text-text-light leading-relaxed">{body}</p>
+    </div>
+  )
+}
+
+function GlanceCard({
+  icon,
+  label,
+  value,
+  clamp
+}: {
+  icon: string
+  label: string
+  value?: string
+  clamp?: boolean
+}) {
+  const hasValue = Boolean(value && value.trim())
+  return (
+    <div className="border border-border rounded-2xl p-5 bg-white">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-lg">{icon}</span>
+        <p className="text-xs font-semibold text-text-muted uppercase tracking-wide">{label}</p>
+      </div>
+      {hasValue ? (
+        <p className={`text-text font-medium leading-relaxed ${clamp ? 'line-clamp-3 text-sm' : ''}`}>{value}</p>
+      ) : (
+        <p className="text-sm text-text-muted italic">Details coming soon</p>
+      )}
     </div>
   )
 }

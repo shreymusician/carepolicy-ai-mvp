@@ -23,7 +23,7 @@ export function ProcessingPage() {
   const messageIndex = Math.min(Math.floor(elapsedSeconds / 2), messages.length - 1)
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-12">
+    <div className="bg-white flex items-center justify-center px-4 py-24">
       <div className="max-w-md w-full text-center">
         <h2 className="text-4xl font-bold mb-8 text-text">Analyzing Your Insurance</h2>
 
