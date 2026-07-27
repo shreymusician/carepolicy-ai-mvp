@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { AppStateProvider } from './state/AppState'
 import { HomePage } from './pages/HomePage'
+import { PolicyHolderPortalPage } from './pages/PolicyHolderPortalPage'
+import { InsuranceCoordinatorPortalPage } from './pages/InsuranceCoordinatorPortalPage'
 import { InsuranceExplorerPage } from './pages/InsuranceExplorerPage'
 import { PolicyDetailPage } from './pages/PolicyDetailPage'
 import { AnalysePage } from './pages/AnalysePage'
@@ -18,6 +20,8 @@ export default function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<HomePage />} />
+            <Route path="policy-holder" element={<PolicyHolderPortalPage />} />
+            <Route path="insurance-coordinator" element={<InsuranceCoordinatorPortalPage />} />
             <Route path="explorer" element={<InsuranceExplorerPage />} />
             <Route path="policy/:id" element={<PolicyDetailPage />} />
             <Route path="analyse" element={<AnalysePage />} />

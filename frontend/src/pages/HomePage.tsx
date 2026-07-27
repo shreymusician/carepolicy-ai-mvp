@@ -1,164 +1,81 @@
 import { Link } from 'react-router-dom'
-import { useCopilot } from '../copilot/CopilotContext'
 
-const WORKFLOW = [
-  { n: 1, title: 'Explore Insurance Policies', body: 'Browse IRDAI-approved health insurance products.' },
-  { n: 2, title: 'Understand Your Policy', body: 'AI explains coverage, waiting periods and exclusions in plain language.' },
-  { n: 3, title: 'Analyse Medical Documents', body: 'Extract structured information from hospital paperwork.' },
-  { n: 4, title: 'Prior Authorization Assistant', body: 'Prepare prior authorization requests with AI assistance before treatment.' }
-]
-
-interface Feature {
-  icon: string
+interface RoleCard {
+  to: string
   title: string
-  body: string
-  to?: string
-  copilot?: boolean
+  description: string
+  icon: JSX.Element
 }
 
-const FEATURES: Feature[] = [
-  { icon: '🔍', title: 'Insurance Explorer', body: 'Browse IRDAI-approved insurance products.', to: '/explorer' },
-  { icon: '📘', title: 'Policy Intelligence', body: 'AI explains insurance policies in simple language.', to: '/explorer' },
-  { icon: '🧾', title: 'Medical Intelligence', body: 'Extract structured medical information from hospital documents.', to: '/documents' },
-  { icon: '✅', title: 'Prior Authorization Assistant', body: 'Prepare complete prior authorization requests with AI assistance before treatment.', to: '/prior-auth' },
-  { icon: '💬', title: 'AI Copilot', body: 'Ask questions about insurance policies and prior authorization, from any page.', copilot: true }
-]
-
-const TRUST = [
-  { icon: '🟢', title: 'Official IRDAI information', body: 'Products taken from the IRDAI approved-product catalogue.' },
-  { icon: '🟢', title: 'Official insurer documents', body: 'Details read from the insurer’s own published documents.' },
-  { icon: '📄', title: 'Customer Information Sheets', body: 'The standardised summary every insurer must publish.' },
-  { icon: '📄', title: 'Official Policy Wordings', body: 'The full approved policy contract, linked for you to read.' }
+const ROLES: RoleCard[] = [
+  {
+    to: '/policy-holder',
+    title: 'Policy Holder',
+    description:
+      'Understand your insurance policy, upload documents, check coverage, compare policies and get AI-powered explanations.',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7 sm:w-8 sm:h-8">
+        <circle cx="12" cy="8" r="4" />
+        <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+      </svg>
+    )
+  },
+  {
+    to: '/insurance-coordinator',
+    title: 'Insurance Coordinator',
+    description:
+      'Review patient insurance, verify eligibility, analyse medical records and prepare Prior Authorization requests.',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7 sm:w-8 sm:h-8">
+        <path d="M4 21V6.5L12 3l8 3.5V21" />
+        <path d="M9 21v-6h6v6" />
+        <path d="M12 8v4M10 10h4" />
+      </svg>
+    )
+  }
 ]
 
 export function HomePage() {
-  const { open: openCopilot } = useCopilot()
-
   return (
-    <div>
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
       {/* Hero */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-20 sm:pt-24 sm:pb-28 text-center">
-        <span className="inline-block text-xs font-semibold px-3 py-1.5 rounded-full bg-blue-50 text-primary border border-blue-200 mb-6">
-          Built on official IRDAI-approved product information
-        </span>
-        <h1 className="text-5xl sm:text-6xl font-bold tracking-tight mb-5">CarePolicy AI</h1>
-        <p className="text-xl sm:text-2xl text-text-light font-light mb-6">
-          Making Health Insurance Simple, Accessible and Intelligent.
+      <div className="text-center mb-10 sm:mb-14">
+        <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-primary text-white grid place-items-center font-bold text-2xl mx-auto mb-5">
+          M
+        </div>
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-text mb-2">MyInsurance</h1>
+        <p className="text-lg sm:text-xl text-text-light font-light mb-4">
+          Making Health Insurance easier for everyone.
         </p>
-        <p className="text-base sm:text-lg text-text-muted max-w-2xl mx-auto leading-relaxed mb-10">
-          CarePolicy AI helps citizens and healthcare workers understand insurance policies, analyse medical
-          documents, and prepare prior authorization requests with AI assistance.
+        <p className="text-sm sm:text-base text-text-muted leading-relaxed max-w-lg mx-auto">
+          Whether you're managing your own insurance or processing it professionally, choose how you'd like to
+          continue below.
         </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+      </div>
+
+      {/* Role cards */}
+      <div className="flex flex-col gap-5 sm:gap-6">
+        {ROLES.map(role => (
           <Link
-            to="/explorer"
-            className="bg-primary text-white font-semibold py-3.5 px-8 rounded-xl hover:bg-blue-700 transition"
+            key={role.to}
+            to={role.to}
+            className="group flex items-start gap-4 sm:gap-5 bg-white border border-border rounded-2xl p-5 sm:p-7 shadow-sm hover:shadow-md hover:border-primary transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
-            Get Started
+            <span className="shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-blue-50 text-primary border border-blue-100 grid place-items-center">
+              {role.icon}
+            </span>
+            <span className="flex-1 min-w-0">
+              <span className="block font-bold text-lg sm:text-xl text-text mb-1.5">{role.title}</span>
+              <span className="block text-sm sm:text-base text-text-muted leading-relaxed mb-4">
+                {role.description}
+              </span>
+              <span className="inline-flex items-center justify-center bg-primary text-white font-semibold text-sm sm:text-base py-3 px-6 rounded-xl group-hover:bg-blue-700 transition min-h-[44px]">
+                Continue
+              </span>
+            </span>
           </Link>
-          <Link
-            to="/explorer"
-            className="border-2 border-primary text-primary font-semibold py-3.5 px-8 rounded-xl hover:bg-blue-50 transition"
-          >
-            Explore Insurance Policies
-          </Link>
-        </div>
-      </section>
-
-      {/* Workflow */}
-      <section className="bg-background-alt border-y border-border">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-3">How it works</h2>
-          <p className="text-text-muted text-center mb-12">From finding a policy to prior authorization readiness.</p>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
-            {WORKFLOW.map((s, i) => (
-              <div key={s.n} className="relative">
-                <div className="bg-white border border-border rounded-2xl p-6 h-full">
-                  <div className="w-10 h-10 rounded-full bg-primary text-white grid place-items-center font-bold mb-4">
-                    {s.n}
-                  </div>
-                  <h3 className="font-bold text-lg mb-2">{s.title}</h3>
-                  <p className="text-sm text-text-muted leading-relaxed">{s.body}</p>
-                </div>
-                {i < WORKFLOW.length - 1 && (
-                  <span className="hidden md:block absolute top-1/2 -right-3 text-border text-2xl leading-none">→</span>
-                )}
-                {i < WORKFLOW.length - 1 && (
-                  <span className="md:hidden block text-center text-border text-2xl leading-none py-1">↓</span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center mb-3">What CarePolicy AI does</h2>
-        <p className="text-text-muted text-center mb-12">One platform across the whole insurance journey.</p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {FEATURES.map(f => {
-            const inner = (
-              <>
-                <div className="text-3xl mb-4">{f.icon}</div>
-                <h3 className="font-bold text-lg mb-2">{f.title}</h3>
-                <p className="text-sm text-text-muted leading-relaxed">{f.body}</p>
-              </>
-            )
-            const cls =
-              'text-left border border-border rounded-2xl p-6 hover:border-primary hover:shadow-md transition bg-white'
-
-            return f.copilot ? (
-              <button key={f.title} onClick={openCopilot} className={cls}>
-                {inner}
-              </button>
-            ) : (
-              <Link key={f.title} to={f.to as string} className={cls}>
-                {inner}
-              </Link>
-            )
-          })}
-        </div>
-      </section>
-
-      {/* Trust */}
-      <section className="bg-background-alt border-y border-border">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-3">Where our information comes from</h2>
-          <p className="text-text-muted text-center max-w-2xl mx-auto mb-12">
-            Every policy detail shown in CarePolicy AI is taken from official regulatory or insurer sources, so you
-            can always trace what you read back to the original document.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-4xl mx-auto">
-            {TRUST.map(t => (
-              <div key={t.title} className="bg-white border border-border rounded-2xl p-6 flex gap-4">
-                <span className="text-xl shrink-0">{t.icon}</span>
-                <div>
-                  <h3 className="font-semibold mb-1">{t.title}</h3>
-                  <p className="text-sm text-text-muted leading-relaxed">{t.body}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20 text-center">
-        <h2 className="text-3xl sm:text-4xl font-bold mb-4">Start with your policy</h2>
-        <p className="text-text-muted mb-8 max-w-xl mx-auto">
-          Find an insurance product and let CarePolicy AI explain exactly what it covers.
-        </p>
-        <Link
-          to="/explorer"
-          className="inline-block bg-primary text-white font-semibold py-3.5 px-8 rounded-xl hover:bg-blue-700 transition"
-        >
-          Explore Insurance Policies
-        </Link>
-      </section>
+        ))}
+      </div>
     </div>
   )
 }
