@@ -19,7 +19,7 @@ export function MedicalDocumentsPage() {
       <ItemGrid items={DOCUMENTS} />
 
       <p className="text-sm text-text-muted leading-relaxed mt-8">
-        Extracted details will be linked to your selected insurance policy, so CarePolicy AI can show how the
+        Extracted details will be linked to your selected insurance policy, so MyInsurance can show how the
         treatment relates to the coverage in that policy.
       </p>
     </ComingSoon>

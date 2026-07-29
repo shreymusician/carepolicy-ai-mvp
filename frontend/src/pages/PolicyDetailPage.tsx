@@ -288,7 +288,7 @@ export function PolicyDetailPage() {
               <h2 className="text-xl font-bold text-text mb-2">More details on the way</h2>
               <p className="text-text-light mb-1">{PENDING_DETAILS_NOTE}</p>
               <p className="text-text-muted text-sm mb-6">
-                You can upload this policy document now and CarePolicy AI will explain the coverage, waiting periods
+                You can upload this policy document now and MyInsurance will explain the coverage, waiting periods
                 and exclusions in simple language.
               </p>
               <button

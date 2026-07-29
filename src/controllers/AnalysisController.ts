@@ -92,13 +92,26 @@ export class AnalysisController {
 
       // Step 5: Call AI provider (Gemini)
       console.log('[Analysis] Step 5: Calling AI provider...');
-      const llmResponse = await LlmService.analyze(prompt);
-      console.log(`[Analysis] AI response received: ${llmResponse.length} characters`);
+      let llmResponse: string;
+      let analysisResult: Awaited<ReturnType<typeof ResponseParserService.parse>>;
 
-      // Step 6: Parse and validate response
-      console.log('[Analysis] Step 6: Parsing and validating response...');
-      const analysisResult = ResponseParserService.parse(llmResponse);
-      console.log('[Analysis] Response validation successful');
+      try {
+        llmResponse = await LlmService.analyze(prompt);
+        console.log(`[Analysis] AI response received: ${llmResponse.length} characters`);
+
+        // Step 6: Parse and validate response
+        console.log('[Analysis] Step 6: Parsing and validating response...');
+        try {
+          analysisResult = ResponseParserService.parse(llmResponse);
+          console.log('[Analysis] Response validation successful');
+        } catch (parseError) {
+          console.warn('[Analysis] Falling back to simple explanation due to parsing error:', parseError);
+          analysisResult = PromptBuilderService.buildFallbackAnalysisResult(cleanPolicyText, cleanPrescriptionText);
+        }
+      } catch (llmError) {
+        console.warn('[Analysis] Falling back to simple explanation due to AI provider error:', llmError);
+        analysisResult = PromptBuilderService.buildFallbackAnalysisResult(cleanPolicyText, cleanPrescriptionText);
+      }
 
       // Step 7: Store in MongoDB
       console.log('[Analysis] Step 7: Storing analysis in MongoDB...');

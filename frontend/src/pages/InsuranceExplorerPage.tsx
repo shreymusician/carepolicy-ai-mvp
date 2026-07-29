@@ -24,7 +24,6 @@ interface Policy {
   official_policy_pdf_url?: string
 }
 
-
 const POLICY_TYPES = [
   { value: '', label: 'All Types' },
   { value: 'individual', label: 'Individual' },
@@ -79,118 +78,114 @@ export function InsuranceExplorerPage() {
   }, [query, selectedCompany, selectedType])
 
   return (
-    <div className="bg-white">
-      <div className="border-b border-border">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-          <h1 className="text-4xl sm:text-5xl font-bold text-text mb-2">Find Your Insurance Policy</h1>
-          <p className="text-text-muted text-lg mb-3">Search and select a policy to understand its coverage</p>
-          <TrustNote />
-        </div>
-      </div>
+    <div className="px-3 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+      <div className="mx-auto max-w-6xl">
+        <section className="surface-card overflow-hidden p-5 sm:p-8 lg:p-10">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">Insurance explorer</p>
+              <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Find the right policy with less effort.</h1>
+              <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">
+                Search across insurers and compare policy summaries before you upload a document for a deeper review.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+              <TrustNote />
+            </div>
+          </div>
+        </section>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-        {/* Search */}
-        <div className="mb-6">
-          <input
-            type="text"
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            placeholder="Search by company or policy name (e.g. Star Health, Care Supreme)..."
-            className="w-full border border-border rounded-lg px-5 py-4 text-lg focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
-
-        {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-8">
-          <select
-            value={selectedType}
-            onChange={e => setSelectedType(e.target.value)}
-            className="border border-border rounded-lg px-4 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            {POLICY_TYPES.map(t => (
-              <option key={t.value} value={t.value}>{t.label}</option>
-            ))}
-          </select>
-
-          <select
-            value={selectedCompany}
-            onChange={e => setSelectedCompany(e.target.value)}
-            className="border border-border rounded-lg px-4 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            <option value="">All Companies</option>
-            {companies.map(c => (
-              <option key={c._id} value={c.name}>{c.name}</option>
-            ))}
-          </select>
+        <section className="mt-6 surface-card p-4 sm:p-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:flex-row">
+            <label className="flex-1">
+              <span className="sr-only">Search policies</span>
+              <input
+                type="text"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder="Search by company or policy name"
+                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+              />
+            </label>
+            <select
+              value={selectedType}
+              onChange={e => setSelectedType(e.target.value)}
+              className="rounded-2xl border border-slate-300 bg-white px-4 py-3.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+            >
+              {POLICY_TYPES.map(t => (
+                <option key={t.value} value={t.value}>{t.label}</option>
+              ))}
+            </select>
+            <select
+              value={selectedCompany}
+              onChange={e => setSelectedCompany(e.target.value)}
+              className="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+            >
+              <option value="">All Companies</option>
+              {companies.map(c => (
+                <option key={c._id} value={c.name}>{c.name}</option>
+              ))}
+            </select>
+          </div>
 
           {(selectedType || selectedCompany || query) && (
-            <button
-              onClick={() => { setSelectedType(''); setSelectedCompany(''); setQuery('') }}
-              className="text-sm text-primary hover:underline px-2"
-            >
+            <button onClick={() => { setSelectedType(''); setSelectedCompany(''); setQuery('') }} className="mt-4 text-sm font-semibold text-primary hover:underline">
               Clear filters
             </button>
           )}
-        </div>
+        </section>
 
-        {/* Results */}
-        {loading ? (
-          <p className="text-text-muted text-center py-12">Loading policies...</p>
-        ) : policies.length === 0 ? (
-          <p className="text-text-muted text-center py-12">No policies match your search.</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {policies.map(policy => (
-              <button
-                key={policy._id}
-                onClick={() => onSelectPolicy({ id: policy._id, name: policy.policy_name, companyName: policy.company_name })}
-                className="text-left border border-border rounded-xl p-5 hover:border-primary hover:shadow-md transition bg-white"
-              >
-                <div className="flex items-center gap-3 mb-3">
-                  <img
-                    src={policy.company_logo_url}
-                    alt={policy.company_name}
-                    className="w-10 h-10 rounded object-cover border border-border"
-                  />
-                  <div>
-                    <p className="font-semibold text-text">{policy.company_name}</p>
-                    <span className="inline-block text-xs font-semibold px-2 py-0.5 rounded bg-blue-100 text-blue-700 mt-1">
-                      {POLICY_TYPES.find(t => t.value === policy.policy_type)?.label || policy.policy_type}
-                    </span>
+        <section className="mt-6">
+          {loading ? (
+            <div className="surface-card p-10 text-center text-sm text-slate-600">Loading policies…</div>
+          ) : policies.length === 0 ? (
+            <div className="surface-card p-10 text-center text-sm text-slate-600">No policies match your search yet.</div>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2">
+              {policies.map(policy => (
+                <button
+                  key={policy._id}
+                  onClick={() => onSelectPolicy({ id: policy._id, name: policy.policy_name, companyName: policy.company_name })}
+                  className="group text-left rounded-[1.25rem] border border-slate-200 bg-white/90 p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_16px_45px_-24px_rgba(0,102,204,0.5)] sm:p-5 sm:rounded-[1.5rem]"
+                >
+                  <div className="flex items-center gap-3">
+                    <img src={policy.company_logo_url} alt={policy.company_name} className="h-11 w-11 rounded-xl border border-slate-200 object-cover" />
+                    <div>
+                      <p className="font-semibold text-slate-900">{policy.company_name}</p>
+                      <span className="mt-1 inline-block rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
+                        {POLICY_TYPES.find(t => t.value === policy.policy_type)?.label || policy.policy_type}
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                <p className="text-lg font-bold text-text mb-2">{policy.policy_name}</p>
+                  <p className="mt-4 text-lg font-semibold text-slate-900">{policy.policy_name}</p>
 
-                {policy.description && (
-                  <p className="text-sm text-text-light mb-2 line-clamp-2">{policy.description}</p>
-                )}
-                {policy.coverage_summary && (
-                  <p className="text-sm text-text-muted line-clamp-2 mb-2">{policy.coverage_summary}</p>
-                )}
-                {policy.waiting_period && (
-                  <p className="text-xs text-text-muted line-clamp-2">
-                    <span className="font-semibold">Waiting period:</span> {policy.waiting_period}
-                  </p>
-                )}
+                  {policy.description && <p className="mt-2 text-sm leading-6 text-slate-600">{policy.description}</p>}
+                  {policy.coverage_summary && <p className="mt-2 text-sm leading-6 text-slate-600">{policy.coverage_summary}</p>}
+                  {policy.waiting_period && (
+                    <p className="mt-2 text-sm text-slate-600">
+                      <span className="font-semibold text-slate-900">Waiting period:</span> {policy.waiting_period}
+                    </p>
+                  )}
 
-                {!policy.description && !policy.coverage_summary && !policy.waiting_period && (
-                  <p className="text-sm text-text-muted italic">{PENDING_DETAILS_NOTE}</p>
-                )}
+                  {!policy.description && !policy.coverage_summary && !policy.waiting_period && (
+                    <p className="mt-2 text-sm italic text-slate-500">{PENDING_DETAILS_NOTE}</p>
+                  )}
 
-                <div className="mt-4 pt-3 border-t border-border">
-                  <InfoBadge level={policy.verification_status === 'verified' ? 'official' : 'basic'} />
-                </div>
-              </button>
-            ))}
+                  <div className="mt-4 border-t border-slate-200 pt-3">
+                    <InfoBadge level={policy.verification_status === 'verified' ? 'official' : 'basic'} />
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div className="mt-8 rounded-[1.5rem] border border-dashed border-primary/30 bg-primary/5 p-5 text-center">
+            <button onClick={onSkip} className="text-sm font-semibold text-primary hover:underline">
+              Skip to direct document upload →
+            </button>
           </div>
-        )}
-
-        <div className="text-center mt-10 pt-8 border-t border-border">
-          <button onClick={onSkip} className="text-primary font-semibold hover:underline">
-            Skip — Upload a policy document directly →
-          </button>
-        </div>
+        </section>
       </div>
     </div>
   )

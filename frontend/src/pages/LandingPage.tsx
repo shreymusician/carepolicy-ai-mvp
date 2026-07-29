@@ -6,11 +6,15 @@ interface LandingPageProps {
   onChangePolicy?: () => void
 }
 
+const HELP_STEPS = [
+  'Upload the insurance policy PDF you want reviewed.',
+  'Add a prescription if you want treatment-specific context.',
+  'Receive a clear, human-friendly explanation with follow-up questions.'
+]
+
 export function LandingPage({ onSubmit, selectedPolicy, onChangePolicy }: LandingPageProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const prescriptionInputRef = useRef<HTMLInputElement>(null)
-  const policyDragRef = useRef<HTMLDivElement>(null)
-  const prescriptionDragRef = useRef<HTMLDivElement>(null)
 
   const [policyFile, setPolicyFile] = useState<File | null>(null)
   const [prescriptionFile, setPrescriptionFile] = useState<File | null>(null)
@@ -90,162 +94,144 @@ export function LandingPage({ onSubmit, selectedPolicy, onChangePolicy }: Landin
   }
 
   return (
-    <div className="bg-white flex flex-col items-center justify-center px-4 py-12">
-      <div className="max-w-2xl w-full">
-        {/* Header */}
-        <div className="mb-12 text-center">
-          <h1 className="text-5xl font-bold mb-3 text-text">CarePolicy AI</h1>
-          <p className="text-2xl text-text-light font-light">
-            Making Health Insurance Understandable
+    <div className="px-3 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-8 text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">Policy review in a few steps</p>
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+            Make your insurance documents easier to understand.
+          </h1>
+          <p className="mx-auto mt-3 max-w-2xl text-base leading-7 text-slate-600">
+            Upload a policy and optional prescription to get a clear summary of what is covered, what is excluded, and what to review next.
           </p>
         </div>
 
-        {selectedPolicy && (
-          <div className="mb-8 flex items-center justify-between gap-4 bg-blue-50 border border-blue-200 rounded-lg px-5 py-4">
-            <div>
-              <p className="text-xs font-semibold text-primary uppercase tracking-wide">Selected Policy</p>
-              <p className="text-text font-semibold">{selectedPolicy.companyName} — {selectedPolicy.name}</p>
-            </div>
-            {onChangePolicy && (
-              <button onClick={onChangePolicy} className="text-sm text-primary hover:underline whitespace-nowrap">
-                Back
-              </button>
+        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="surface-card p-5 sm:p-8">
+            <h2 className="text-xl font-semibold text-slate-900">How it works</h2>
+            <ul className="mt-5 space-y-3 text-sm leading-7 text-slate-600">
+              {HELP_STEPS.map(step => (
+                <li key={step} className="flex gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                  <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-primary/10 text-sm font-semibold text-primary">•</span>
+                  <span>{step}</span>
+                </li>
+              ))}
+            </ul>
+
+            {selectedPolicy && (
+              <div className="mt-6 rounded-[1.25rem] border border-primary/20 bg-primary/5 p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">Selected policy</p>
+                <div className="mt-2 flex items-center justify-between gap-3">
+                  <div>
+                    <p className="font-semibold text-slate-900">{selectedPolicy.companyName}</p>
+                    <p className="text-sm text-slate-600">{selectedPolicy.name}</p>
+                  </div>
+                  {onChangePolicy && (
+                    <button onClick={onChangePolicy} className="text-sm font-semibold text-primary hover:underline">
+                      Change
+                    </button>
+                  )}
+                </div>
+              </div>
             )}
           </div>
-        )}
 
-        {/* Main Content */}
-        <form onSubmit={handleSubmit} className="w-full">
-          {/* Policy Upload */}
-          <div className="mb-10">
-            <label className="block text-lg font-semibold mb-3 text-text">
-              Insurance Policy <span className="text-primary">*</span>
-            </label>
-            <p className="text-sm text-text-muted mb-4">Upload your policy PDF (up to 10MB)</p>
+          <form onSubmit={handleSubmit} className="surface-card p-5 sm:p-8">
+            <div className="mb-6">
+              <label className="block text-lg font-semibold text-slate-900">
+                Insurance policy <span className="text-primary">*</span>
+              </label>
+              <p className="mt-2 text-sm text-slate-600">Upload a PDF policy document up to 10MB.</p>
 
-            <div
-              ref={policyDragRef}
-              onDragEnter={handlePolicyDrag}
-              onDragLeave={handlePolicyDrag}
-              onDragOver={handlePolicyDrag}
-              onDrop={handlePolicyDrop}
-              onClick={() => fileInputRef.current?.click()}
-              className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition ${
-                policyDragActive
-                  ? 'border-primary bg-blue-50'
-                  : policyFile
-                  ? 'border-green-500 bg-green-50'
-                  : 'border-border hover:border-primary hover:bg-background-alt'
+              <div
+                onDragEnter={handlePolicyDrag}
+                onDragLeave={handlePolicyDrag}
+                onDragOver={handlePolicyDrag}
+                onDrop={handlePolicyDrop}
+                onClick={() => fileInputRef.current?.click()}
+                className={`mt-4 cursor-pointer rounded-[1.25rem] border-2 border-dashed p-6 text-center transition sm:rounded-[1.5rem] sm:p-8 ${
+                  policyDragActive
+                    ? 'border-primary bg-primary/10'
+                    : policyFile
+                      ? 'border-emerald-400 bg-emerald-50'
+                      : 'border-slate-300 bg-slate-50 hover:border-primary hover:bg-blue-50/50'
+                }`}
+              >
+                {policyFile ? (
+                  <div>
+                    <div className="text-3xl">✓</div>
+                    <p className="mt-2 font-semibold text-slate-900">{policyFile.name}</p>
+                    <p className="text-sm text-slate-600">{(policyFile.size / 1024 / 1024).toFixed(1)}MB</p>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="text-4xl">📄</div>
+                    <p className="mt-2 font-semibold text-slate-900">Click to upload or drag and drop</p>
+                    <p className="text-sm text-slate-600">PDF only</p>
+                  </div>
+                )}
+                <input ref={fileInputRef} type="file" accept=".pdf" onChange={(e) => handlePolicyChange(e.target.files?.[0] || null)} className="hidden" />
+              </div>
+              {policyFile && (
+                <button type="button" onClick={() => setPolicyFile(null)} className="mt-3 text-sm font-semibold text-primary hover:underline">
+                  Remove file
+                </button>
+              )}
+            </div>
+
+            <div className="mb-8">
+              <label className="block text-lg font-semibold text-slate-900">
+                Prescription <span className="text-sm font-normal text-slate-500">(Optional)</span>
+              </label>
+              <p className="mt-2 text-sm text-slate-600">Add a prescription PDF or image for treatment-specific context.</p>
+
+              <div
+                onDragEnter={handlePrescriptionDrag}
+                onDragLeave={handlePrescriptionDrag}
+                onDragOver={handlePrescriptionDrag}
+                onDrop={handlePrescriptionDrop}
+                onClick={() => prescriptionInputRef.current?.click()}
+                className={`mt-4 cursor-pointer rounded-[1.25rem] border-2 border-dashed p-6 text-center transition sm:rounded-[1.5rem] sm:p-8 ${
+                  prescriptionDragActive
+                    ? 'border-primary bg-primary/10'
+                    : prescriptionFile
+                      ? 'border-emerald-400 bg-emerald-50'
+                      : 'border-slate-300 bg-slate-50 hover:border-primary hover:bg-blue-50/50'
+                }`}
+              >
+                {prescriptionFile ? (
+                  <div>
+                    <div className="text-3xl">✓</div>
+                    <p className="mt-2 font-semibold text-slate-900">{prescriptionFile.name}</p>
+                    <p className="text-sm text-slate-600">{(prescriptionFile.size / 1024 / 1024).toFixed(1)}MB</p>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="text-4xl">📋</div>
+                    <p className="mt-2 font-semibold text-slate-900">Attach a prescription</p>
+                    <p className="text-sm text-slate-600">PDF, PNG or JPG</p>
+                  </div>
+                )}
+                <input ref={prescriptionInputRef} type="file" accept=".pdf,.png,.jpg,.jpeg" onChange={(e) => handlePrescriptionChange(e.target.files?.[0] || null)} className="hidden" />
+              </div>
+              {prescriptionFile && (
+                <button type="button" onClick={() => setPrescriptionFile(null)} className="mt-3 text-sm font-semibold text-primary hover:underline">
+                  Remove file
+                </button>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={!policyFile}
+              className={`w-full rounded-full px-6 py-3.5 text-sm font-semibold text-white transition ${
+                policyFile ? 'bg-primary hover:bg-blue-700' : 'cursor-not-allowed bg-slate-400'
               }`}
             >
-              {policyFile ? (
-                <div>
-                  <div className="text-3xl mb-2">✓</div>
-                  <p className="font-semibold text-text text-lg">{policyFile.name}</p>
-                  <p className="text-sm text-text-muted mt-1">
-                    {(policyFile.size / 1024 / 1024).toFixed(1)}MB
-                  </p>
-                </div>
-              ) : (
-                <div>
-                  <div className="text-4xl mb-3 text-text-muted">📄</div>
-                  <p className="text-lg text-text font-medium">Click to upload or drag and drop</p>
-                  <p className="text-sm text-text-muted mt-1">PDF file only</p>
-                </div>
-              )}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".pdf"
-                onChange={(e) => handlePolicyChange(e.target.files?.[0] || null)}
-                className="hidden"
-              />
-            </div>
-            {policyFile && (
-              <button
-                type="button"
-                onClick={() => setPolicyFile(null)}
-                className="text-sm text-primary hover:underline mt-2"
-              >
-                Remove file
-              </button>
-            )}
-          </div>
-
-          {/* Prescription Upload */}
-          <div className="mb-12">
-            <label className="block text-lg font-semibold mb-3 text-text">
-              Doctor's Prescription <span className="text-text-muted font-normal">(Optional)</span>
-            </label>
-            <p className="text-sm text-text-muted mb-4">Upload prescription PDF or image to help AI understand your specific treatment (up to 10MB)</p>
-
-            <div
-              ref={prescriptionDragRef}
-              onDragEnter={handlePrescriptionDrag}
-              onDragLeave={handlePrescriptionDrag}
-              onDragOver={handlePrescriptionDrag}
-              onDrop={handlePrescriptionDrop}
-              onClick={() => prescriptionInputRef.current?.click()}
-              className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition ${
-                prescriptionDragActive
-                  ? 'border-primary bg-blue-50'
-                  : prescriptionFile
-                  ? 'border-green-500 bg-green-50'
-                  : 'border-border hover:border-primary hover:bg-background-alt'
-              }`}
-            >
-              {prescriptionFile ? (
-                <div>
-                  <div className="text-3xl mb-2">✓</div>
-                  <p className="font-semibold text-text text-lg">{prescriptionFile.name}</p>
-                  <p className="text-sm text-text-muted mt-1">
-                    {(prescriptionFile.size / 1024 / 1024).toFixed(1)}MB
-                  </p>
-                </div>
-              ) : (
-                <div>
-                  <div className="text-4xl mb-3 text-text-muted">📋</div>
-                  <p className="text-lg text-text font-medium">Click to upload or drag and drop</p>
-                  <p className="text-sm text-text-muted mt-1">PDF or image (PNG/JPG)</p>
-                </div>
-              )}
-              <input
-                ref={prescriptionInputRef}
-                type="file"
-                accept=".pdf,.png,.jpg,.jpeg"
-                onChange={(e) => handlePrescriptionChange(e.target.files?.[0] || null)}
-                className="hidden"
-              />
-            </div>
-            {prescriptionFile && (
-              <button
-                type="button"
-                onClick={() => setPrescriptionFile(null)}
-                className="text-sm text-primary hover:underline mt-2"
-              >
-                Remove file
-              </button>
-            )}
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={!policyFile}
-            className={`w-full py-4 px-6 rounded-lg font-bold text-lg text-white transition ${
-              policyFile
-                ? 'bg-primary hover:bg-blue-700 cursor-pointer'
-                : 'bg-text-muted cursor-not-allowed opacity-50'
-            }`}
-          >
-            {policyFile ? 'Analyze My Insurance' : 'Upload a Policy to Begin'}
-          </button>
-        </form>
-
-        {/* Footer */}
-        <p className="text-center text-text-muted text-sm mt-10">
-          Your documents are analyzed securely using AI. We process your data only to generate your report.
-        </p>
+              {policyFile ? 'Analyze my insurance' : 'Upload a policy to begin'}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   )

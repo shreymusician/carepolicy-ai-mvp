@@ -11,9 +11,9 @@ export function CopilotFab() {
   return (
     <button
       onClick={toggle}
-      aria-label={isOpen ? 'Close CarePolicy AI Copilot' : 'Open CarePolicy AI Copilot (Ctrl+Shift+A)'}
+      aria-label={isOpen ? 'Close MyInsurance Copilot' : 'Open MyInsurance Copilot (Ctrl+Shift+A)'}
       aria-expanded={isOpen}
-      title="Ask CarePolicy AI  ·  Ctrl+Shift+A"
+      title="Ask MyInsurance  ·  Ctrl+Shift+A"
       className={`copilot-fab fixed z-[60] rounded-full bg-primary text-white shadow-lg shadow-primary/25
         grid place-items-center transition-all duration-200
         hover:bg-blue-700 hover:scale-105 active:scale-95

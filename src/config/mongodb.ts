@@ -1,7 +1,16 @@
 import mongoose from 'mongoose';
 import ConfigService from './service';
 
-export async function connectToDatabase(): Promise<void> {
+export async function connectToDatabase(): Promise<boolean> {
+  if (mongoose.connection.readyState === 1) {
+    return true;
+  }
+
+  if (!ConfigService.database.mongoUri) {
+    console.warn('⚠ MongoDB URI is not configured; continuing without database persistence');
+    return false;
+  }
+
   try {
     await mongoose.connect(ConfigService.database.mongoUri, {
       serverSelectionTimeoutMS: 5000,
@@ -10,9 +19,10 @@ export async function connectToDatabase(): Promise<void> {
     });
 
     console.log('✓ Connected to MongoDB Atlas');
+    return true;
   } catch (error) {
-    console.error('✗ MongoDB connection failed:', error instanceof Error ? error.message : String(error));
-    process.exit(1);
+    console.warn('⚠ MongoDB connection unavailable; continuing without database persistence:', error instanceof Error ? error.message : String(error));
+    return false;
   }
 }
 

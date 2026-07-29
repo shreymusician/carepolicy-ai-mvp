@@ -42,7 +42,7 @@ export function CopilotPanel() {
       <aside
         role="dialog"
         aria-modal="false"
-        aria-label="CarePolicy AI Copilot"
+        aria-label="MyInsurance Copilot"
         style={{
           transform: isOpen ? 'translate3d(0,0,0)' : closedTransform,
           transition: 'transform 300ms cubic-bezier(0.16, 1, 0.3, 1)'
@@ -55,7 +55,7 @@ export function CopilotPanel() {
         <header className="px-5 py-4 border-b border-border shrink-0">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <h2 className="font-bold text-text leading-tight">CarePolicy AI Copilot</h2>
+              <h2 className="font-bold text-text leading-tight">MyInsurance Copilot</h2>
               <p className="text-xs text-text-muted mt-1 leading-snug">
                 Ask anything about insurance, medical documents, or prior authorization.
               </p>

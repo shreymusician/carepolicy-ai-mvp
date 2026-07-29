@@ -18,14 +18,14 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 export function AboutPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
-      <h1 className="text-4xl sm:text-5xl font-bold mb-4">About CarePolicy AI</h1>
+      <h1 className="text-4xl sm:text-5xl font-bold mb-4">About MyInsurance</h1>
       <p className="text-lg text-text-muted mb-14">
         Making Health Insurance Simple, Accessible and Intelligent.
       </p>
 
-      <Section title="What is CarePolicy AI?">
+      <Section title="What is MyInsurance?">
         <p>
-          CarePolicy AI is an AI-powered health insurance platform. It brings insurance product information, policy
+          MyInsurance is an AI-powered health insurance platform. It brings insurance product information, policy
           understanding, medical document analysis and prior authorization preparation into one place, so healthcare
           workers can prepare accurate authorization requests before treatment begins, not deal with rejections after.
         </p>
@@ -43,7 +43,7 @@ export function AboutPage() {
         <p>
           IRDAI is the insurance regulator of India, and every health insurance product sold here must be approved by
           it and given a Unique Identification Number (UIN). Building on the IRDAI approved-product catalogue means the
-          products shown in CarePolicy AI are real, approved products — traceable to a regulator-published document
+          products shown in MyInsurance are real, approved products — traceable to a regulator-published document
           rather than a marketing page.
         </p>
         <p>
@@ -65,7 +65,7 @@ export function AboutPage() {
           are the insurer's words and which are the explanation.
         </p>
         <p>
-          CarePolicy AI helps healthcare workers prepare prior authorization requests that are complete and accurate,
+          MyInsurance helps healthcare workers prepare prior authorization requests that are complete and accurate,
           reducing approval delays, preventing rejections, and improving treatment readiness.
         </p>
       </Section>

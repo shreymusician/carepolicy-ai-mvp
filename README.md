@@ -1,8 +1,10 @@
-# CarePolicy AI
+# MyInsurance
 
-**AI Copilot for Hospital Insurance Processing**
+**Mobile-first insurance assistance for insurance coordinators**
 
-An intelligent system that helps hospital staff understand insurance policies and extract information in minutes instead of hours.
+A mobile-first insurance assistance application that helps an Insurance Coordinator complete health-insurance workflows accurately and transparently, across a 4-step process: select policy, review eligibility, review medical records, and prepare the claim/pre-authorization form.
+
+See [PROJECT_PROGRESS.md](./PROJECT_PROGRESS.md) for current scope and status.
 
 ## Project Status
 

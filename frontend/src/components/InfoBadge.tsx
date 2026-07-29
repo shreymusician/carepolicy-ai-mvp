@@ -49,7 +49,7 @@ export function InfoBadge({ level, className = '' }: { level: InfoLevel; classNa
 export function TrustNote({ className = '' }: { className?: string }) {
   return (
     <span
-      title="CarePolicy AI only displays information verified from official insurer sources to ensure accuracy."
+      title="MyInsurance only displays information verified from official insurer sources to ensure accuracy."
       className={`inline-flex items-center gap-1 text-xs text-text-muted cursor-help ${className}`}
     >
       <span aria-hidden="true">ⓘ</span>

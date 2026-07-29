@@ -78,7 +78,7 @@ function deriveContext(
 
   return {
     surface: seg,
-    label: labels[seg] || 'CarePolicy AI',
+    label: labels[seg] || 'MyInsurance',
     documentId,
     policyId,
     policyName

@@ -22,6 +22,73 @@ export interface PolicyKnowledgeInput {
 }
 
 export class PromptBuilderService {
+  buildFallbackAnalysisResult(policyText: string, prescriptionText?: string): AnalysisResult {
+    const normalized = (policyText || '').trim();
+    const excerpt = normalized.length > 500 ? normalized.slice(0, 500) : normalized;
+    const hasPrescription = Boolean(prescriptionText && prescriptionText.trim());
+
+    const baseSummary =
+      excerpt && /hospital|cover|coverage|waiting|day|pre-existing|pre existing|maternity|room/i.test(excerpt)
+        ? `This plan appears to provide basic hospital and treatment coverage based on the uploaded document. The wording suggests the insurer may pay for covered medical care subject to the stated limits and waiting periods.`
+        : 'This plan appears to provide medical coverage based on the uploaded document. The policy wording should be reviewed carefully for the exact benefits and limits.';
+
+    const fallbackCovered = baseSummary;
+    const fallbackNotCovered =
+      'The document may not list every benefit, exclusion, or claim condition in plain language. Important limits, waiting periods, and exclusions should be confirmed from the official policy document.';
+
+    const keyPoints = [
+      'The uploaded policy text was processed, but the AI could not return a fully structured analysis.',
+      'A plain-language summary is being provided from the available document text.',
+      'Please verify the final terms directly with the insurer or the official policy document.'
+    ];
+
+    return {
+      document_analysis: {
+        extracted_facts: {
+          policy_information: {
+            document_summary: {
+              value: excerpt || 'Policy text was not available.',
+              confidence: 'medium' as const,
+              source: 'Fallback summary from uploaded document'
+            }
+          },
+          exclusions: []
+        },
+        ai_generated_knowledge: {
+          policy_summary: {
+            what_is_covered: fallbackCovered,
+            what_is_not_covered: fallbackNotCovered,
+            key_points: keyPoints,
+            source: 'Fallback summary generated from uploaded policy text'
+          },
+          relevant_clauses: []
+        },
+        risk_assessment: {
+          critical_issues: [],
+          important_notes: [],
+          general_notes: [
+            {
+              severity: 'info' as const,
+              issue: 'Simple explanation generated from fallback mode',
+              explanation: hasPrescription
+                ? 'The uploaded prescription was included, but the full AI analysis could not be completed. A simple summary is shown instead.'
+                : 'The uploaded policy document was processed, but the full AI analysis could not be completed. A simple summary is shown instead.'
+            }
+          ]
+        },
+        metadata: {
+          prescription_provided: hasPrescription,
+          overall_confidence: 'low' as const,
+          confidence_explanation: 'The AI returned an incomplete response, so the explanation is based on a fallback summary.',
+          processing_complete: true,
+          processing_time_ms: 0,
+          document_quality: 'fair',
+          ocr_confidence: 'medium' as const
+        }
+      }
+    };
+  }
+
   /**
    * Extracts the full structured knowledge set from an official policy document.
    * Every fact carries its own source/confidence/page so the UI can stay traceable.
@@ -95,7 +162,7 @@ CRITICAL RULES — accuracy matters more than completeness:
       throw new PromptBuildError('No policy information available to explain');
     }
 
-    return `You are CarePolicy AI. Rewrite the official insurance information below into plain, everyday language that someone with no insurance knowledge can understand.
+    return `You are MyInsurance. Rewrite the official insurance information below into plain, everyday language that someone with no insurance knowledge can understand.
 
 OFFICIAL INFORMATION (transcribed from the insurer's own documents):
 ${facts}
@@ -144,7 +211,7 @@ ${analysis.treatment_specific_summary
   ? `\nTREATMENT-SPECIFIC SUMMARY:\n${JSON.stringify(analysis.treatment_specific_summary, null, 2)}`
   : ''}`;
 
-    return `You are CarePolicy AI, answering a patient's question about their own insurance policy using ONLY the analysis context below. Do not invent facts that are not present in the context.
+    return `You are MyInsurance, answering a patient's question about their own insurance policy using ONLY the analysis context below. Do not invent facts that are not present in the context.
 
 ${context}
 

@@ -28,13 +28,13 @@ export function PriorAuthorizationPage() {
           <strong>Why it matters:</strong> Getting prior authorization approval before treatment prevents costly delays and claim rejections. It also helps hospitals plan resources and billing more accurately.
         </p>
         <p>
-          <strong>How CarePolicy AI helps:</strong> The readiness score will highlight anything still missing from the prior authorization request, so it can be corrected before it reaches the insurer rather than after a rejection. This reduces approval delays and improves treatment readiness.
+          <strong>How MyInsurance helps:</strong> The readiness score will highlight anything still missing from the prior authorization request, so it can be corrected before it reaches the insurer rather than after a rejection. This reduces approval delays and improves treatment readiness.
         </p>
       </div>
 
       <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
         <p className="text-sm text-text font-semibold mb-2">🔮 Future capabilities</p>
-        <p className="text-sm text-text-muted">After Prior Authorization is complete, CarePolicy AI will support Claim Submission, Claim Tracking, and Settlement Status — helping healthcare workers through the entire insurance cycle.</p>
+        <p className="text-sm text-text-muted">After Prior Authorization is complete, MyInsurance will support Claim Submission, Claim Tracking, and Settlement Status — helping healthcare workers through the entire insurance cycle.</p>
       </div>
     </ComingSoon>
   )

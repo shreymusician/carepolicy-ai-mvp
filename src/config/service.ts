@@ -45,6 +45,14 @@ export class ConfigService {
     format: 'json'
   };
 
+  // Authentication Configuration
+  auth = {
+    jwtSecret: process.env.JWT_SECRET || '',
+    jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
+    cookieName: 'myinsurance_token',
+    bcryptSaltRounds: 10
+  };
+
   // Security Configuration
   security = {
     enableRateLimit: this.env === 'production',
@@ -71,8 +79,8 @@ export class ConfigService {
     if (!this.llm.apiKey) {
       errors.push('GEMINI_API_KEY environment variable is not set');
     }
-    if (!this.database.mongoUri) {
-      errors.push('MONGODB_URI environment variable is not set');
+    if (!this.auth.jwtSecret) {
+      errors.push('JWT_SECRET environment variable is not set');
     }
     if (!this.api.port || Number.isNaN(this.api.port)) {
       errors.push('PORT environment variable is invalid');

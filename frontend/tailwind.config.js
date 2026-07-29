@@ -17,13 +17,15 @@ export default {
         '4xl': ['36px', { lineHeight: '40px' }],
       },
       colors: {
-        'primary': '#0066CC',  // One accent color only
-        'text': '#000000',
-        'text-light': '#333333',
-        'text-muted': '#666666',
-        'border': '#CCCCCC',
-        'background': '#FFFFFF',
-        'background-alt': '#F5F5F5',
+        'primary': '#2563eb',
+        'secondary': '#14b8a6',
+        'accent': '#7c3aed',
+        'text': '#0f172a',
+        'text-light': '#334155',
+        'text-muted': '#64748b',
+        'border': '#dbeafe',
+        'background': '#f8fbff',
+        'background-alt': '#eef6ff',
       },
       spacing: {
         'safe-top': 'max(1rem, var(--safe-area-inset-top))',

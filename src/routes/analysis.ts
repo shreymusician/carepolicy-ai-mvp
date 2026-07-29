@@ -2,6 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import AnalysisController from '../controllers/AnalysisController';
 import ChatController from '../controllers/ChatController';
+import { getDemoWorkflowPayload } from '../mock/demoWorkflow';
 
 const router = Router();
 
@@ -46,5 +47,11 @@ router.post(
   '/chat/:documentId',
   (req, res, next) => ChatController.ask(req, res, next)
 );
+
+// GET /api/v1/demo/workflow
+// Return mock workflow data for product demos and onboarding
+router.get('/demo/workflow', (_req, res) => {
+  res.json(getDemoWorkflowPayload());
+});
 
 export default router;

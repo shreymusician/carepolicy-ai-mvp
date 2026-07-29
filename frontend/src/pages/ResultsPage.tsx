@@ -133,11 +133,11 @@ export function ResultsPage({ data, onReset }: ResultsPageProps) {
           </Section>
         )}
 
-        {/* Ask CarePolicy AI */}
+        {/* Ask MyInsurance */}
         <div className="mt-12 pt-8 border-t border-border">
           <div className="flex items-center gap-3 mb-5">
             <span className="text-2xl">💬</span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-text">Ask CarePolicy AI</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-text">Ask MyInsurance</h2>
           </div>
           <p className="text-text-muted mb-6">
             Ask a question about this policy — e.g. "Is knee surgery covered?"
